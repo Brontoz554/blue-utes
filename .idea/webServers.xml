@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="827715f4-7a19-4ad1-926f-8e2120d7eeff" name="utes">
+        <fileTransfer rootFolder="/var/www/utes.0370.ru/htdocs" accessType="SFTP" host="95.170.156.101" port="14217" sshConfigId="985295c1-8afc-4d45-8afe-4f3498f3a114" sshConfig="web24@95.170.156.101:14217 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
