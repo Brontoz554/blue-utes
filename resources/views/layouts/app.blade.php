@@ -11,6 +11,9 @@
 
     <!-- Scripts -->
     <script src="../../../public/js/app.js" defer></script>
+    <script src="../../../public/js/jquery.clim.min.js"></script>
+    <script src="../../../public/js/bootstrap.min.js"></script>
+    <script src="../../../public/js/popper.min.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -18,6 +21,7 @@
 
     <!-- Styles -->
     <link href="../../../public/css/app.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../public/css/bootstrap.min.css">
 </head>
 <body>
     <div id="app">
