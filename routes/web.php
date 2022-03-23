@@ -10,6 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+use App\Http\Middleware\VerifyCsrfToken;
+
 Auth::routes();
 
 Route::get('/', function () {
@@ -20,4 +23,4 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
-Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
+Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage')->withoutMiddleware([VerifyCsrfToken::class]);
