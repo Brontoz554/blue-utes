@@ -23,4 +23,4 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
-Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage')->withoutMiddleware([VerifyCsrfToken::class]);
+Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
