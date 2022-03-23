@@ -36,6 +36,7 @@ class TelegramBotController extends Controller
         $chatId = $updates['message'] ? $updates['message']['chat']['id'] : $updates['callback_query']['from']['id']; // чат от которого пришло сообщение
         Log::debug('tg-message', [$textUpdates]);
         Log::debug('chatId', [$chatId]);
-        $bot->sendMessage($chatId, 'Сообщение получено');
+
+        $bot->sendMessage($chatId, 'Мне пока нечего ответить на ваше сообщение..');
     }
 }

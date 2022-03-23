@@ -17,10 +17,10 @@ Auth::routes();
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('main');
 
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/profile', 'HomeController@index')->name('profile');
 
 Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
 Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
