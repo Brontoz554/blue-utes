@@ -26,6 +26,7 @@ class TelegramBotController extends Controller
      */
     public function getMessage(Request $request)
     {
+        Log::debug('tg-message', $request->all());
         $updates = json_decode(file_get_contents('php://input'), 1);
         $textUpdates = $updates['message']['text'];
 //        $chatId = $updates['message'] ? $updates['message']['chat']['id'] : $updates['callback_query']['from']['id']; // чат от которого пришло сообщение
