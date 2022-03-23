@@ -30,6 +30,7 @@ class TelegramBotController extends Controller
     public function getMessage(Request $request)
     {
         $bot = new BotApi('5174671948:AAGbDuirO7x92Ai3W--aiYkd-WmCol1IW70');
+        $bot->setCurlOption('CURLOPT_TIMEOUT', 15);
         $updates = $request->all();
         $textUpdates = $updates['message']['text'];
         $chatId = $updates['message'] ? $updates['message']['chat']['id'] : $updates['callback_query']['from']['id']; // чат от которого пришло сообщение
