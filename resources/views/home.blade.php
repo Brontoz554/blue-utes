@@ -20,7 +20,7 @@
 {{--            </div>--}}
 {{--        </div>--}}
 {{--    </div>--}}
-    <div class="container" style="min-height: 1604.44px;">
+    <div class="container">
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -52,7 +52,6 @@
                             </div>
 
                         </div>
-
 
                         <div class="card card-primary">
                             <div class="card-header">

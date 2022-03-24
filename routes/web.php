@@ -11,16 +11,15 @@
 |
 */
 
-use App\Http\Middleware\VerifyCsrfToken;
-
 Auth::routes();
 
 Route::get('/', function () {
     return view('welcome');
 })->name('main');
 
-
 Route::get('/profile', 'HomeController@index')->name('profile');
-
 Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
 Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
+Route::get('/summernote-example', 'ExampleController@summernote')->name('summernote');
+
+//placeForAutoGenerateRoute
