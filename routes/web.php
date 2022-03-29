@@ -26,16 +26,4 @@ Route::get('/create-news', 'NewsController@createView')->name('create.news.blade
 Route::post('/create-news', 'NewsController@store')->name('create.news');
 Route::get('/news', 'NewsController@index')->name('news');
 
-Route::get('/add-roles', function () {
-    $role = new \App\Role();
-
-    $role->name = 'user';
-    $role->save();
-
-    $role = new \App\Role();
-
-    $role->name = 'manager';
-    $role->save();
-});
-
 //placeForAutoGenerateRoute
