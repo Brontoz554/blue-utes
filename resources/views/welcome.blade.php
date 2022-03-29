@@ -75,6 +75,7 @@
 
             <div class="links">
                 <a href="https://t.me/blue_cliff_bot" target="_blank">Наш телеграм бот</a>
+                <a href="{{ route('news') }}" target="_blank">Новости</a>
                 <a href="https://adminlte.io/themes/v3/" target="_blank">Admin lte preview</a>
                 <a href="{{ route('summernote') }}">summernote</a>
                 <a href="https://github.com/Brontoz554?tab=repositories">GitHub</a>

@@ -15,4 +15,4 @@
             $('#example').summernote();
         });
     </script>
-в@endsection
+@endsection

@@ -22,6 +22,10 @@ Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
 Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
 Route::get('/summernote-example', 'ExampleController@summernote')->name('summernote');
 
+Route::get('/create-news', 'NewsController@createView')->name('create.news.blade');
+Route::post('/create-news', 'NewsController@store')->name('create.news');
+Route::get('/news', 'NewsController@index')->name('news');
+
 Route::get('/add-roles', function () {
     $role = new \App\Role();
 
