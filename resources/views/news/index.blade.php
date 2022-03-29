@@ -26,7 +26,7 @@
                                 </div>
                                 <b>{{ $item->subject }}</b>
                                 <p class="text-muted">{{ $item->content }}</p>
-                                <img src="storage\{{ $item->image }}" alt="news image">
+                                <img src="storage\{{ $item->image }}" alt="news image" width="200" height="200">
                                 <br>
                                 <a href="{{$item->link}}" target="__blank">Подробнее</a>
                             </div>

@@ -22,8 +22,12 @@ Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
 Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
 Route::get('/summernote-example', 'ExampleController@summernote')->name('summernote');
 
-Route::get('/create-news', 'NewsController@createView')->name('create.news.blade');
+Route::get('/create-news', 'NewsController@createView')->name('create.news.view');
 Route::post('/create-news', 'NewsController@store')->name('create.news');
 Route::get('/news', 'NewsController@index')->name('news');
+Route::get('/all-news', 'NewsController@show')->name('show.news');
+Route::get('/remove-news/{id}', 'NewsController@destroy')->name('destroy.news');
+Route::get('/edit-news/{id}', 'NewsController@editView')->name('edit.news.view');
+Route::post('/edit-news/', 'NewsController@edit')->name('edit.news');
 
 //placeForAutoGenerateRoute

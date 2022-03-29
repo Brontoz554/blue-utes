@@ -62,4 +62,55 @@ class NewsController extends Controller
         session()->flash('message', 'Новость успешно создана');
         return Redirect::refresh();
     }
+
+    /**
+     * @return View
+     */
+    public function show(): View
+    {
+        $news = News::all();
+
+        return view('news.show', ['news' => $news]);
+    }
+
+    /**
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function destroy($id): RedirectResponse
+    {
+        News::destroy($id);
+        session()->flash('message', 'Новость была удалена');
+
+        return Redirect::back();
+    }
+
+    /**
+     * @param $id
+     * @return View
+     */
+    public function editView($id): View
+    {
+        $news = News::find($id);
+
+        return view('news.edit', ['news' => $news]);
+    }
+
+    public function edit(Request $request)
+    {
+        $updates = [];
+        foreach ($request->all() as $key => $item) {
+            if ($key != '_token') {
+                $updates[$key] = $item;
+            }
+            if ($key == 'image') {
+                $imageName = md5(microtime(true)) . '.' . $request->file('image')->extension();
+                $request->file('image')->move('storage/', $imageName);
+                $updates[$key] = $imageName;
+            }
+        }
+        unset($updates['_token']);
+        $result = News::where('id', $request->id)->update($updates);
+        dd($result);
+    }
 }
