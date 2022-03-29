@@ -56,5 +56,11 @@
             </tbody>
         </table>
     </div>
-    {{--    {{ $news }}--}}
+    <script>
+        if ($('.alert.alert-success.w-25').is(':visible')) {
+            setInterval(() => {
+                $('.alert.alert-success.w-25').hide(300)
+            }, 5000)
+        }
+    </script>
 @endsection
