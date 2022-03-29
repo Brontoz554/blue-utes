@@ -34,8 +34,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                @foreach($news as $item)
+            @foreach($news as $item)
+
+                <tr>
                     <td>{{ $item->user->name }}</td>
                     <td>{{ $item->subject }}</td>
                     <td class="col-2">{{ \Illuminate\Support\Str::limit($item->content) }}</td>
@@ -50,8 +51,8 @@
                             Редактировать
                         </a>
                     </td>
-                @endforeach
-            </tr>
+                </tr>
+            @endforeach
             </tbody>
         </table>
     </div>
