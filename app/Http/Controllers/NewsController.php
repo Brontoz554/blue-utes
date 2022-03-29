@@ -51,14 +51,14 @@ class NewsController extends Controller
 
         $imageName = md5(microtime(true)) . '.' . $request->file('image')->extension();
         $news = new News([
-            'author_id' => Auth::id(),
+            'user_id' => Auth::id(),
             'subject' => $request->subject,
             'content' => $request->news_content,
             'image' => $imageName,
             'link' => $request->link,
         ]);
         if ($news->save()) {
-            $request->file('image')->move('images', $imageName);
+            $request->file('image')->move('storage', $imageName);
         }
 
         session()->flash('message', 'Новость успешно создана');

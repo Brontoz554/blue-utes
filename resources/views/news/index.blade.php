@@ -28,7 +28,8 @@
                                 </div>
                                 <b>{{ $item->subject }}</b>
                                 <p class="text-muted">{{ $item->content }}</p>
-                                <img src="{{ app_path('..\public\\images\\'.$item->image) }}" alt="news image">
+                                <img src="{{public_path('storage\\'.$item->image)}}" alt="news image">
+                                <a href="{{$item->link}}" target="__blank">Подробнее</a>
                             </div>
                         @endforeach
                     </div>
