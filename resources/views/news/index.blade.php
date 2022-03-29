@@ -1,14 +1,12 @@
 @extends('layouts.app')
 @section('content')
-    {{--    {{ dd($news) }}--}}
-
     <div class="container">
         <div class="card">
             <div class="card-header p-2">
                 <ul class="nav nav-pills">
-                    <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Activity</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Новости</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Что-то ещё</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Что-то ещё</a></li>
                 </ul>
             </div>
             <div class="card-body">
@@ -28,7 +26,8 @@
                                 </div>
                                 <b>{{ $item->subject }}</b>
                                 <p class="text-muted">{{ $item->content }}</p>
-                                <img src="{{public_path('storage\\'.$item->image)}}" alt="news image">
+                                <img src="storage\{{ $item->image }}" alt="news image">
+                                <br>
                                 <a href="{{$item->link}}" target="__blank">Подробнее</a>
                             </div>
                         @endforeach

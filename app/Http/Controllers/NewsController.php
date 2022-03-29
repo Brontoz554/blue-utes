@@ -56,7 +56,7 @@ class NewsController extends Controller
             'link' => $request->link,
         ]);
         if ($news->save()) {
-            $request->file('image')->move('storage', $imageName);
+            $request->file('image')->move('storage/', $imageName);
         }
 
         session()->flash('message', 'Новость успешно создана');
