@@ -48,7 +48,7 @@
                                          src="https://p7.hiclipart.com/preview/139/726/399/vector-graphics-computer-icons-user-illustration-image-man-at-computer.jpg" alt="User profile picture">
                                 </div>
                                 <h3 class="profile-username text-center">{{ Auth::user()->name }}</h3>
-                                <p class="text-muted text-center">Manager</p>
+                                <p class="text-muted text-center text-uppercase">{{ Auth::user()->role->name }}</p>
                             </div>
 
                         </div>

@@ -22,4 +22,16 @@ Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
 Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
 Route::get('/summernote-example', 'ExampleController@summernote')->name('summernote');
 
+Route::get('/add-roles', function () {
+    $role = new \App\Role();
+
+    $role->name = 'user';
+    $role->save();
+
+    $role = new \App\Role();
+
+    $role->name = 'manager';
+    $role->save();
+});
+
 //placeForAutoGenerateRoute
