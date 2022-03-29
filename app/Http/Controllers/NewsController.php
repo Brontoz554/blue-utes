@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\News;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +13,7 @@ class NewsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('manager');
+        $this->middleware(['auth', 'manager']);
     }
 
     /**
