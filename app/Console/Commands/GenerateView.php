@@ -92,7 +92,7 @@ class GenerateView extends Command
                 $result .= "Route::get('/" . $view . "', 'GeneratedViewController@" . $view . "');\n\n";
                 $result .= "//placeForAutoGenerateRoute";
             } else {
-                $result .= "\n" . $line;
+                $result .= $line;
             }
         }
         File::put($routesPath, $result);
