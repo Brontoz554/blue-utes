@@ -35,7 +35,6 @@
             </thead>
             <tbody>
             @foreach($news as $item)
-
                 <tr>
                     <td>{{ $item->user->name }}</td>
                     <td>{{ $item->subject }}</td>

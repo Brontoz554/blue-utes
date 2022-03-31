@@ -83,14 +83,14 @@ class GenerateView extends Command
      */
     public function addNewRoute($view)
     {
-        $routesPath = 'routes/web.php';
+        $routesPath = 'routes/auto-generated/web.php';
         $content = File::get($routesPath);
         $content = explode("\n", $content);
         $result = '';
         foreach ($content as $line) {
             if ($line == '//placeForAutoGenerateRoute') {
                 $result .= "Route::get('/" . $view . "', 'GeneratedViewController@" . $view . "');\n\n";
-                $result .= "//placeForAutoGenerateRoute\n";
+                $result .= "//placeForAutoGenerateRoute";
             } else {
                 $result .= "\n" . $line;
             }
@@ -110,11 +110,13 @@ class GenerateView extends Command
         $result = '';
         foreach ($content as $line) {
             if ($line == '    //') {
-                $result .= $this->tab . "public function " . $view . "()\n" .
-                    $this->tab . "{\n" .
-                    $this->tab . $this->tab . " return view('generated-view." . $view . "');\n" .
-                    $this->tab . "}\n" .
-                    "\n" . $this->tab . "//\n";
+                $result .=
+                    "    public function " . $view . "()\n" .
+                    "    {\n" .
+                    "        return view('generated-view." . $view . "');\n" .
+                    "    }\n" .
+                    "\n" .
+                    "    //\n";
             } else {
                 $result .= $line . "\n";
             }
