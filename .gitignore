@@ -13,5 +13,5 @@ yarn-error.log
 .idea
 /public/images/
 /routes/auto-generated/
-/app/Http/Controllers/auto-generate/GeneratedViewController.php
+/app/Http/Controllers/auto-generate/*
 /resources/views/generated-view/*
