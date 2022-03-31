@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class GenerateView extends Command
 {
@@ -85,7 +86,7 @@ class GenerateView extends Command
     {
         $routesPath = 'routes/auto-generated/web.php';
         $content = File::get($routesPath);
-        $replace = "Route::get('/" . $view . "', 'GeneratedViewController@" . $view . "');\n\n//placeForAutoGenerateRoute";
+        $replace = "Route::get('/" . Str::snake($view) . "', 'AutoGenerate\GeneratedViewController@" . $view . "');\n\n//placeForAutoGenerateRoute";
         $result = str_replace('//placeForAutoGenerateRoute', $replace, $content);
 
         File::put($routesPath, $result);
