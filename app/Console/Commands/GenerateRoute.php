@@ -87,7 +87,7 @@ class GenerateRoute extends Command
      */
     public function addNewRoute($name)
     {
-        $routesPath = app_path('..\routes\auto-generated\web.php');
+        $routesPath = app_path('../routes/auto-generated/web.php');
         $content = File::get($routesPath);
         $replace = "Route::get('/" . Str::snake($name) . "', 'AutoGenerate\GeneratedViewController@" . $name . "');\n\n//placeForAutoGenerateRoute";
         $result = str_replace('//placeForAutoGenerateRoute', $replace, $content);
@@ -101,7 +101,7 @@ class GenerateRoute extends Command
      */
     public function addNewRouteInController($name)
     {
-        $controllerPath = app_path('Http\Controllers\AutoGenerate\GeneratedViewController.php');
+        $controllerPath = app_path('Http/Controllers/AutoGenerate/GeneratedViewController.php');
         $content = File::get($controllerPath);
         $replace =
             "public function " . $name . "()\n" .
@@ -127,7 +127,7 @@ class GenerateRoute extends Command
     {
         $name = str_replace('.', '/', $name) . '.blade.php';
 
-        return app_path("..\\resources\\views\generated-view\\{$name}");
+        return app_path("../resources/views/generated-view/{$name}");
     }
 
     /**
