@@ -96,7 +96,7 @@ class GenerateView extends Command
      * @return void     */
     public function addNewRouteInController($view)
     {
-        $controllerPath = 'app/Http/Controllers/auto-generate/GeneratedViewController.php';
+        $controllerPath = 'app/Http/Controllers/AutoGenerate/GeneratedViewController.php';
         $content = File::get($controllerPath);
         $replace =
             "public function " . $view . "()\n" .
