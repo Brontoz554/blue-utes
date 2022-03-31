@@ -29,5 +29,3 @@ Route::get('/all-news', 'NewsController@show')->name('show.news');
 Route::get('/remove-news/{id}', 'NewsController@destroy')->name('destroy.news');
 Route::get('/edit-news/{id}', 'NewsController@editView')->name('edit.news.view');
 Route::post('/edit-news/', 'NewsController@edit')->name('edit.news');
-Route::get('/test', 'AutoGenerate\GeneratedViewController@test');
-//placeForAutoGenerateRoute
