@@ -25,7 +25,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Validator::extend('website', function ($attribute, $value, $parameters, $validator) {
-            return filter_var($value, FILTER_VALIDATE_URL);
+            if ($value == null) {
+                return true;
+            } else {
+                return filter_var($value, FILTER_VALIDATE_URL);
+            }
         });
     }
 }

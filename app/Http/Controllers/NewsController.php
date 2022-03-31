@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\News;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class NewsController extends Controller
@@ -42,21 +44,28 @@ class NewsController extends Controller
     {
         $request->validate([
             'subject' => 'required|max:100',
-            'news_content' => 'required|max:500',
+            'news_content' => 'required|max:1000',
             'image' => 'required',
-            'link' => 'required|website',
+            'link' => 'required_without:pageName|website',
+            'pageName' => 'required_without:link',
         ]);
 
-        $imageName = md5(microtime(true)) . '.' . $request->file('image')->extension();
-        $news = new News([
-            'user_id' => Auth::id(),
-            'subject' => $request->subject,
-            'content' => $request->news_content,
-            'image' => $imageName,
-            'link' => $request->link,
-        ]);
-        if ($news->save()) {
-            $request->file('image')->move('storage/', $imageName);
+        //генерируем новую страницу
+        if ($request->checkbox === 'yes') {
+            if (Artisan::call('generate:route ' . $request->pageName)) {
+                $link = $request->link ?? $request->pageName;
+                $imageName = md5(microtime(true)) . '.' . $request->file('image')->extension();
+                $news = new News([
+                    'user_id' => Auth::id(),
+                    'subject' => $request->subject,
+                    'content' => $request->news_content,
+                    'image' => $imageName,
+                    'link' => Str::snake($link),
+                ]);
+                if ($news->save()) {
+                    $request->file('image')->move('storage/', $imageName);
+                }
+            }
         }
 
         session()->flash('message', 'Новость успешно создана');
@@ -96,7 +105,11 @@ class NewsController extends Controller
         return view('news.edit', ['news' => $news]);
     }
 
-    public function edit(Request $request)
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function edit(Request $request): RedirectResponse
     {
         $updates = [];
         foreach ($request->all() as $key => $item) {
@@ -110,7 +123,8 @@ class NewsController extends Controller
             }
         }
         unset($updates['_token']);
-        $result = News::where('id', $request->id)->update($updates);
-        dd($result);
+        News::where('id', $request->id)->update($updates);
+
+        return Redirect::back();
     }
 }
