@@ -85,42 +85,28 @@ class GenerateView extends Command
     {
         $routesPath = 'routes/auto-generated/web.php';
         $content = File::get($routesPath);
-        $content = explode("\n", $content);
-        $result = '';
-        foreach ($content as $line) {
-            if ($line == '//placeForAutoGenerateRoute') {
-                $result .= "Route::get('/" . $view . "', 'GeneratedViewController@" . $view . "');\n\n";
-                $result .= "//placeForAutoGenerateRoute";
-            } else {
-                $result .= $line;
-            }
-        }
+        $replace = "Route::get('/" . $view . "', 'GeneratedViewController@" . $view . "');\n\n//placeForAutoGenerateRoute";
+        $result = str_replace('//placeForAutoGenerateRoute', $replace, $content);
+
         File::put($routesPath, $result);
     }
 
     /**
      * @param $view
-     * @return void
-     */
+     * @return void     */
     public function addNewRouteInController($view)
     {
-        $controllerPath = 'app/Http/Controllers/GeneratedViewController.php';
+        $controllerPath = 'app/Http/Controllers/auto-generate/GeneratedViewController.php';
         $content = File::get($controllerPath);
-        $content = explode("\n", $content);
-        $result = '';
-        foreach ($content as $line) {
-            if ($line == '    //') {
-                $result .=
-                    "    public function " . $view . "()\n" .
-                    "    {\n" .
-                    "        return view('generated-view." . $view . "');\n" .
-                    "    }\n" .
-                    "\n" .
-                    "    //\n";
-            } else {
-                $result .= $line . "\n";
-            }
-        }
+        $replace =
+            "public function " . $view . "()\n" .
+            "    {\n" .
+            "        return view('generated-view." . $view . "');\n" .
+            "    }\n" .
+            "\n" .
+            "    //placeForAutoGenerate";
+
+        $result = str_replace('//placeForAutoGenerate', $replace, $content);
 
         File::put($controllerPath, $result);
     }
