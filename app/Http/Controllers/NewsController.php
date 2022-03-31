@@ -52,21 +52,21 @@ class NewsController extends Controller
 
         //генерируем новую страницу
         if ($request->checkbox === 'yes') {
-            if (Artisan::call('generate:route ' . $request->pageName)) {
-                $link = $request->link ?? $request->pageName;
-                $imageName = md5(microtime(true)) . '.' . $request->file('image')->extension();
-                $news = new News([
-                    'user_id' => Auth::id(),
-                    'subject' => $request->subject,
-                    'content' => $request->news_content,
-                    'image' => $imageName,
-                    'link' => Str::snake($link),
-                ]);
-                if ($news->save()) {
-                    $request->file('image')->move('storage/', $imageName);
-                }
-            }
+            Artisan::call('generate:route ' . $request->pageName);
         }
+        $link = $request->link ?? $request->pageName;
+        $imageName = md5(microtime(true)) . '.' . $request->file('image')->extension();
+        $news = new News([
+            'user_id' => Auth::id(),
+            'subject' => $request->subject,
+            'content' => $request->news_content,
+            'image' => $imageName,
+            'link' => Str::snake($link),
+        ]);
+        if ($news->save()) {
+            $request->file('image')->move('storage/', $imageName);
+        }
+
 
         session()->flash('message', 'Новость успешно создана');
         return Redirect::refresh();

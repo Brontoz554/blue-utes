@@ -34,7 +34,7 @@
         <label for="subject">Сгенерировать страницу?</label>
         {{ Form::checkbox('checkbox', 'yes', true, ['class' => 'generate-page-question']) }}
         <div class="text-muted">
-            Генерировать страницу нужно в тех случаях, когда новость ссылается не на наш сайт
+            Генерировать страницу нужно в тех случаях, когда новость ссылается на наш сайт
         </div>
     </div>
     <div class='form-group required' id="page-name">
