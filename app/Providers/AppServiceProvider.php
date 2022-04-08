@@ -24,12 +24,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Validator::extend('website', function ($attribute, $value, $parameters, $validator) {
-            if ($value == null) {
+        Validator::extend('single_word_or_website', function ($attribute, $value, $parameters, $validator) {
+            if (!preg_match('/\s/u', $value)) {
+                return true;
+            } elseif (filter_var($value, FILTER_VALIDATE_URL)) {
                 return true;
             } else {
-                return filter_var($value, FILTER_VALIDATE_URL);
+                return false;
             }
         });
+
+//        Validator::extend('single_word', function ($attribute, $value, $parameters, $validator) {
+//            return is_string($value) && !preg_match('/\s/u', $value);
+//        });
     }
 }

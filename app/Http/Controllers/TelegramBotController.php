@@ -10,13 +10,15 @@ use TelegramBot\Api\InvalidArgumentException;
 
 class TelegramBotController extends Controller
 {
+    const TOKEN = '5174671948:AAGbDuirO7x92Ai3W--aiYkd-WmCol1IW70';
+
     /**
      * @return void
      * @throws Exception
      */
     public function setWebhook()
     {
-        $bot = new BotApi('5174671948:AAGbDuirO7x92Ai3W--aiYkd-WmCol1IW70');
+        $bot = new BotApi(self::TOKEN);
 
         dd($bot->setWebhook('https://utes.0370.ru/telegramm-bot-message'));
     }
@@ -29,7 +31,7 @@ class TelegramBotController extends Controller
      */
     public function getMessage(Request $request)
     {
-        $bot = new BotApi('5174671948:AAGbDuirO7x92Ai3W--aiYkd-WmCol1IW70');
+        $bot = new BotApi(self::TOKEN);
         $bot->setCurlOption(CURLOPT_TIMEOUT, 15);
         $updates = $request->all();
         $textUpdates = $updates['message']['text'];

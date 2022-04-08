@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Pages;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -9,7 +10,6 @@ use Illuminate\Support\Str;
 
 class GenerateRoute extends Command
 {
-    public string $tab = "    ";
     /**
      * The name and signature of the console command.
      *
@@ -47,10 +47,6 @@ class GenerateRoute extends Command
 
             return true;
         } catch (\Exception $e) {
-            dd([
-                $e->getMessage(),
-                $e->getFile()
-            ]);
             Log::debug('create view error', [
                 'Message' => $e->getMessage(),
                 'Line' => $e->getLine(),
@@ -75,9 +71,18 @@ class GenerateRoute extends Command
             return;
         }
 
-        File::put($path, "@extends('layouts.app')\n@section('title', 'Синий утёс')\n@section('content')
-    <p style='text-align: center; margin-top: 50px;'>Hello it's you're generated page</p>\n@endsection()");
-
+        File::put($path, '@extends("layouts.app")
+@section("title", "Синий утёс")
+@section("content")
+    <div class="container">
+        {!! $content->content !!}
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#example").summernote();
+        });
+</script>
+@endsection()');
     }
 
 
@@ -106,7 +111,8 @@ class GenerateRoute extends Command
         $replace =
             "public function " . $name . "()\n" .
             "    {\n" .
-            "        return view('generated-view." . $name . "');\n" .
+            '        $content = Pages::where(\'name\', \'=\', "' . $name . '")->first();' . "\n\n" .
+            '        return view(\'generated-view.' . $name . '\', [\'content\' => $content]);' . "\n" .
             "    }\n" .
             "\n" .
             "    //placeForAutoGenerate";

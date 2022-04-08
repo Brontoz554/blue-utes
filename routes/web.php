@@ -29,3 +29,10 @@ Route::get('/all-news', 'NewsController@show')->name('show.news');
 Route::get('/remove-news/{id}', 'NewsController@destroy')->name('destroy.news');
 Route::get('/edit-news/{id}', 'NewsController@editView')->name('edit.news.view');
 Route::post('/edit-news/', 'NewsController@edit')->name('edit.news');
+
+Route::get('/all-pages', 'PagesController@show')->name('pages');
+Route::get('/remove-pages/{id}', 'PagesController@destroy')->name('destroy.page');
+Route::get('/edit-page/{id}', 'PagesController@editView')->name('edit.page.view');
+Route::post('/edit-page/', 'PagesController@edit')->name('edit.page');
+Route::get('/create-page', 'PagesController@createView')->name('create.page.view');
+Route::post('/create-page', 'PagesController@store')->name('create.page');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\News;
+use App\Pages;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -15,7 +16,10 @@ class NewsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'manager']);
+        $this->middleware([
+            'auth',
+//            'manager'
+        ]);
     }
 
     /**
@@ -46,27 +50,31 @@ class NewsController extends Controller
             'subject' => 'required|max:100',
             'news_content' => 'required|max:1000',
             'image' => 'required',
-            'link' => 'required_without:pageName|website',
-            'pageName' => 'required_without:link',
+            'pageName' => 'required|single_word_or_website',
         ]);
 
-        //генерируем новую страницу
-        if ($request->checkbox === 'yes') {
-            Artisan::call('generate:route ' . $request->pageName);
+        //генерируем новую страницу и сохраняем данные о ней
+        if ($request->input('checkbox') === 'yes') {
+            Artisan::call('generate:route ' . $request->input('pageName'));
         }
-        $link = $request->link ?? $request->pageName;
         $imageName = md5(microtime(true)) . '.' . $request->file('image')->extension();
         $news = new News([
             'user_id' => Auth::id(),
-            'subject' => $request->subject,
-            'content' => $request->news_content,
+            'subject' => $request->input('subject'),
+            'content' => $request->input('news_content'),
             'image' => $imageName,
-            'link' => Str::snake($link),
+            'link' => Str::snake($request->input('pageName')),
         ]);
         if ($news->save()) {
             $request->file('image')->move('storage/', $imageName);
         }
 
+        $page = new Pages();
+        $page->name = $request->input('pageName');
+        $page->content = $request->input('content');
+        $page->type_id = '1';
+
+        $page->save();
 
         session()->flash('message', 'Новость успешно создана');
         return Redirect::refresh();
@@ -122,7 +130,7 @@ class NewsController extends Controller
                 $updates[$key] = $imageName;
             }
         }
-        unset($updates['_token']);
+
         News::where('id', $request->id)->update($updates);
 
         return Redirect::back();

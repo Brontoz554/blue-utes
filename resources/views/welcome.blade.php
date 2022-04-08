@@ -75,6 +75,7 @@
 
             <div class="links">
                 <a href="https://t.me/blue_cliff_bot" target="_blank">Наш телеграм бот</a>
+                <a href="{{ route('pages') }}" target="_blank">Модерация страниц</a>
                 <a href="{{ route('news') }}" target="_blank">Новости(пример для клиента)</a>
                 <a href="{{ route('show.news') }}" target="_blank">Новости(пример для админа)</a>
                 <a href="https://adminlte.io/themes/v3/" target="_blank">Admin lte preview</a>
