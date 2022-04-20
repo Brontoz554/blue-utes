@@ -36,3 +36,22 @@ Route::get('/edit-page/{id}', 'PagesController@editView')->name('edit.page.view'
 Route::post('/edit-page/', 'PagesController@edit')->name('edit.page');
 Route::get('/create-page', 'PagesController@createView')->name('create.page.view');
 Route::post('/create-page', 'PagesController@store')->name('create.page');
+
+Route::post('/request', 'RequestController@callMe')->name('request');
+
+Route::get('/room-type', 'RoomsController@createTypeView')->name('room.type.view');
+Route::post('/create-room-type', 'RoomsController@storeType')->name('create.room.type');
+Route::get('/destroy-room-type/{id}', 'RoomsController@destroyType')->name('destroy.room.type');
+Route::post('/edit-type', 'RoomsController@editType')->name('edit.type');
+
+Route::get('/create-room', 'RoomsController@createRoomView')->name('create.room.view');
+Route::get('/rooms', 'RoomsController@RoomView')->name('room.view');
+Route::post('/create-room', 'RoomsController@storeRoom')->name('create.room');
+Route::get('/destroy-room/{id}', 'RoomsController@destroyRoom')->name('destroy.room');
+Route::post('/edit-room', 'RoomsController@editRoom')->name('edit.room');
+
+Route::get('/create-tariff', 'TariffController@createView')->name('create.tariff.view');
+Route::post('/create-tariff', 'TariffController@store')->name('create.tariff');
+Route::get('/tariff', 'TariffController@index')->name('tariff');
+Route::post('/edit-tariff', 'TariffController@editTariff')->name('edit.tariff');
+Route::get('/destroy-tariff/{id}', 'TariffController@destroyTariff')->name('destroy.tariff');

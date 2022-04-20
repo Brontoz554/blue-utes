@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.adminLayout')
 @section('content')
     @if (session()->has('message'))
         <div class="d-flex justify-content-end">

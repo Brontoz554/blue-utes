@@ -41,4 +41,18 @@ class TelegramBotController extends Controller
 
         $bot->sendMessage($chatId, 'Мне пока нечего ответить на ваше сообщение..');
     }
+
+    /**
+     * @param array $content
+     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
+    public static function sendMessage(array $content)
+    {
+        $bot = new BotApi(self::TOKEN);
+        $bot->setCurlOption(CURLOPT_TIMEOUT, 15);
+
+        $bot->sendMessage('938341087', implode(' ', $content));
+    }
 }

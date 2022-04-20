@@ -56,7 +56,15 @@ class NewsController extends Controller
         //генерируем новую страницу и сохраняем данные о ней
         if ($request->input('checkbox') === 'yes') {
             Artisan::call('generate:route ' . $request->input('pageName'));
+
+            $page = new Pages();
+            $page->name = $request->input('pageName');
+            $page->content = $request->input('content');
+            $page->type_id = '1';
+
+            $page->save();
         }
+
         $imageName = md5(microtime(true)) . '.' . $request->file('image')->extension();
         $news = new News([
             'user_id' => Auth::id(),
@@ -65,16 +73,10 @@ class NewsController extends Controller
             'image' => $imageName,
             'link' => Str::snake($request->input('pageName')),
         ]);
+
         if ($news->save()) {
             $request->file('image')->move('storage/', $imageName);
         }
-
-        $page = new Pages();
-        $page->name = $request->input('pageName');
-        $page->content = $request->input('content');
-        $page->type_id = '1';
-
-        $page->save();
 
         session()->flash('message', 'Новость успешно создана');
         return Redirect::refresh();

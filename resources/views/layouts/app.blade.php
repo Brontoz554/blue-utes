@@ -18,10 +18,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css">
-        <script src="{{ asset('/js/app.js') }}"></script>
-        <script src="{{ asset('/js/popper.min.js') }}"></script>
+    <script src="{{ asset('/js/app.js') }}"></script>
+    <script src="{{ asset('/js/popper.min.js') }}"></script>
     <script src="{{ asset('/js/jquery.clim.min.js') }}"></script>
-        <script src="{{ asset('/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/summernote/summernote.min.js') }}"></script>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -30,7 +30,7 @@
     {{--    <link rel="stylesheet" href="{{ asset('/css/bootstrap.min.css') }}">--}}
     <link rel="stylesheet" href="{{ asset('/summernote/summernote.min.css') }}">
     <style>
-        .note-editing-area{
+        .note-editing-area {
             background: white;
         }
     </style>
@@ -69,11 +69,10 @@
                                 {{ Auth::user()->name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a href="{{ route('profile') }}" class="dropdown-item">Профиль</a>
+                                <a href="{{ route('profile') }}" class="dropdown-item">Админка</a>
                                 <a class="dropdown-item"
                                    href="{{ route('logout') }}"
-                                   onclick="event.preventDefault();document.getElementById('logout-form').submit();"
-                                >Выход</a>
+                                   onclick="event.preventDefault();document.getElementById('logout-form').submit();">Выход</a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                       style="display: none;">
                                     @csrf
@@ -89,6 +88,10 @@
         @yield('content')
     </main>
     <footer class="py-5 container">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5260.3417302273!2d84.91652517342!3d56.33498488061946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x43babdcdbaaaaaab%3A0x21770edf1d3d1d0f!2z0KHQuNC90LjQuSDRg9GC0LXRgSwg0YHQsNC90LDRgtC-0YDQuNC5!5e0!3m2!1sru!2sru!4v1649512911703!5m2!1sru!2sru"
+            width="800" height="600" style="border:0; width: 100%;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
         <div class="row">
             <div class="col-2">
                 <h5>Section</h5>
