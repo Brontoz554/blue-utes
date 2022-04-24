@@ -108,6 +108,25 @@
                                 <p>Типы номеров</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('treatment.view') }}" class="nav-link">
+                                <p>Список лечебных услуг</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('eating.view') }}" class="nav-link">
+                                <p>Список приёма пищи</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('services.view') }}" class="nav-link">
+                                <p>Список дополнительных услуг</p>
+                            </a>
+                        </li>
+
                         <li class="nav-item">
                             <a href="{{ route('room.view') }}" class="nav-link">
                                 <p>Номера</p>
@@ -119,8 +138,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="iframe.html" class="nav-link">
+                            <a href="{{ route('booking') }}" class="nav-link">
                                 <p>Добавить бронирование</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('clients') }}" class="nav-link">
+                                <p>Клиенты</p>
                             </a>
                         </li>
                         <li class="nav-header"><h5>Дополнительно</h5></li>

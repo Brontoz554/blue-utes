@@ -1,14 +1,14 @@
 @extends('layouts.adminLayout')
-@section('title', 'Создание типа номера')
+@section('title', 'Дополнительные услуги для тарифа')
 @section('content')
-
-    {!! Form::open(['action' =>'RoomsController@storeType', 'method' => 'POST', 'class' => 'container card p-4'])!!}
-    <h3>Создание типа номера</h3>
+    {!! Form::open(['action' =>'ServicesController@storeServices', 'method' => 'POST', 'class' => 'container card p-4'])!!}
+    @csrf
+    <h3>Добавить дополнительную услугу для тарифа</h3>
 
     <div class='form-group required'>
-        <label for="subject">Название типа</label>
+        <label for="subject">Название</label>
         {{ Form::text('name', null, ['class' => 'form form-control']) }}
-        <div class="text-muted">люкс, комфорт, стандарт и т.п.</div>
+        <div class="text-muted">Аренда мангала, аренда бесетки</div>
     </div>
 
     @if ($errors->any())
@@ -20,18 +20,14 @@
             </ul>
         </div>
     @endif
-    {!! Form::submit('Создать', ['class' => 'btn btn-dark w-25 mt-3']) !!}
-
+    {!! Form::submit('Добавить', ['class' => 'btn btn-dark w-25 mt-3']) !!}
     {!! Form::close() !!}
-
     <div class="container p-0">
         <h3 class="p-2">Текущие типы</h3>
-        <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
-               aria-describedby="example1_info">
+        <table class="table table-bordered table-striped dataTable dtr-inline">
             <thead>
             <tr>
                 <th class="sorting">Название</th>
-                <th class="sorting">Количество связанныех номеров</th>
                 <th class="sorting">Действия</th>
             </tr>
             </thead>
@@ -39,14 +35,12 @@
             @foreach($types as $type)
                 <tr class="odd">
                     <td>
-                        {{--                        <span data-target="{{ $type->name }}">{{ $type->name }}</span>--}}
-                        <input id="{{ $type->id }}" class="type-name form form-control w-75" type="text"
-                               value="{{ $type->name }}" name="name" data-target="{{ $type->name }}">
-                        {{--                        <i class="text-muted fa fa-edit" data-order="{{ $type->name }}"></i>--}}
+                        <input id="{{ $type->id }}" class="type-name form form-control w-75"
+                               value="{{ $type->name }}"
+                               name="name" data-target="{{ $type->name }}">
                     </td>
-                    <td>{{ $type->roomsCount() }}</td>
                     <td>
-                        <a class="btn btn-default" href="{{ route('destroy.room.type', $type->id) }}">Удалить тип</a>
+                        <a class="btn btn-default" href="{{ route('destroy.services', $type->id) }}">Удалить услугу</a>
                     </td>
                 </tr>
             @endforeach
@@ -65,7 +59,7 @@
                 $.ajax({
                     type: "POST",
                     dataType: "json",
-                    url: "{{ route('edit.type') }}",
+                    url: "{{ route('edit.services') }}",
                     data: {
                         id: $(this).attr("id"),
                         name: $(this).attr('name'),
@@ -87,15 +81,5 @@
                 });
             }
         });
-
-        // $('.text-muted.fa.fa-edit').click(function () {
-        //     let order = $(this).attr('data-order')
-        //     $("input[data-target='" + order + "']").css({
-        //         display: 'inline',
-        //     });
-        //     $("span[data-target='" + order + "']").css({
-        //         display: 'none',
-        //     })
-        // });
     </script>
 @endsection

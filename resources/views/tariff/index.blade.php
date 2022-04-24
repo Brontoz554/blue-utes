@@ -12,9 +12,10 @@
             <tr>
                 <th>Название тарифа</th>
                 <th>Цена за сутки</th>
-                <th>Услуги</th>
+                <th>Лечение</th>
+                <th>Питание</th>
+                <th>Проживание</th>
                 <th>Расчётный тип</th>
-                <th>Расчётные часы</th>
                 <th>Доп.услуги</th>
                 <th></th>
             </tr>
@@ -30,30 +31,30 @@
                     </td>
                     <td>
                         @if($obj->treatment)
-                            <div> Лечение включено</div>
+                            @foreach($obj->treatments as $treatment)
+                                <div>{{ $treatment->name }}</div>
+                            @endforeach
                         @endif
+                    </td>
+                    <td>
                         @if($obj->nutrition)
-                            <div>Питание включено</div>
+                            @foreach($obj->eatings as $eat)
+                                <div>{{ $eat->name }}</div>
+                            @endforeach
                         @endif
+                    </td>
+                    <td>
                         @if($obj->accommodation)
                             <div>Проживание включено</div>
                         @endif
                     </td>
                     <td>{{ $obj->type_of_day }}</td>
                     <td>
-                        <div>
-                            Начало {{ $obj->check_out_start }}
-                        </div>
-                        <div>
-                            Конец {{ $obj->check_out_end }}
-                        </div>
-                    </td>
-                    <td>
-                        @foreach(json_decode($obj['another'], true) as $items)
-                            @foreach($items as $key => $item)
-                                {!! $item !!}
+                        @if($obj->nutrition)
+                            @foreach($obj->services as $service)
+                                <div>{{ $service->name }}</div>
                             @endforeach
-                        @endforeach
+                        @endif
                     </td>
                     <td>
                         <a class="btn btn-default" href="{{ route('destroy.tariff', $obj->id) }}">Удалить</a>

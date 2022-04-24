@@ -3,40 +3,33 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tariff extends Model
 {
     protected $guarded = [];
 
-    public $another;
-
+    /**
+     * @return BelongsToMany
+     */
+    public function treatments(): BelongsToMany
+    {
+        return $this->belongsToMany(Treatment::class);
+    }
 
     /**
-     * @param $request
-     * @return array
+     * @return BelongsToMany
      */
-    public static function prepareObject($request): array
+    public function eatings(): BelongsToMany
     {
-        $attributes = [];
-        $json = [];
-        $elems = $request->all();
-        unset($elems['_token']);
+        return $this->belongsToMany(Eating::class);
+    }
 
-        foreach ($elems as $key => $elem) {
-            if (str_contains($key, 'json-name-')) {
-                $json[$elem] = [
-                    'name' => $elem
-                ];
-                $elemKey = $elem;
-            } elseif (str_contains($key, 'json-price-')) {
-                $json[$elemKey]['price'] = $elem;
-            } else {
-                $attributes[$key] = $elem;
-            }
-        }
-
-        $attributes['another'] = json_encode($json);
-
-        return $attributes;
+    /**
+     * @return BelongsToMany
+     */
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Services::class, 'tariff_services');
     }
 }

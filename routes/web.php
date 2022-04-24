@@ -39,10 +39,10 @@ Route::post('/create-page', 'PagesController@store')->name('create.page');
 
 Route::post('/request', 'RequestController@callMe')->name('request');
 
-Route::get('/room-type', 'RoomsController@createTypeView')->name('room.type.view');
-Route::post('/create-room-type', 'RoomsController@storeType')->name('create.room.type');
-Route::get('/destroy-room-type/{id}', 'RoomsController@destroyType')->name('destroy.room.type');
-Route::post('/edit-type', 'RoomsController@editType')->name('edit.type');
+Route::get('/room-type', 'TypeRoomsController@createTypeView')->name('room.type.view');
+Route::post('/create-room-type', 'TypeRoomsController@storeType')->name('create.room.type');
+Route::get('/destroy-room-type/{id}', 'TypeRoomsController@destroyType')->name('destroy.room.type');
+Route::post('/edit-type', 'TypeRoomsController@editType')->name('edit.type');
 
 Route::get('/create-room', 'RoomsController@createRoomView')->name('create.room.view');
 Route::get('/rooms', 'RoomsController@RoomView')->name('room.view');
@@ -55,3 +55,31 @@ Route::post('/create-tariff', 'TariffController@store')->name('create.tariff');
 Route::get('/tariff', 'TariffController@index')->name('tariff');
 Route::post('/edit-tariff', 'TariffController@editTariff')->name('edit.tariff');
 Route::get('/destroy-tariff/{id}', 'TariffController@destroyTariff')->name('destroy.tariff');
+
+Route::get('/treatment', 'TreatmentController@treatmentView')->name('treatment.view');
+Route::post('/create-treatment', 'TreatmentController@storeTreatment')->name('create.treatment');
+Route::get('/destroy-treatment/{id}', 'TreatmentController@destroyTreatment')->name('destroy.treatment');
+Route::post('/edit-treatment', 'TreatmentController@editTreatment')->name('edit.treatment');
+
+Route::get('/eating', 'EatingController@eatingView')->name('eating.view');
+Route::post('/create-eating', 'EatingController@storeEating')->name('create.eating');
+Route::get('/destroy-eating/{id}', 'EatingController@destroyEating')->name('destroy.eating');
+Route::post('/edit-eating', 'EatingController@editEating')->name('edit.eating');
+
+Route::get('/services', 'ServicesController@servicesView')->name('services.view');
+Route::post('/create-services', 'ServicesController@storeServices')->name('create.services');
+Route::get('/destroy-services/{id}', 'ServicesController@destroyService')->name('destroy.services');
+Route::post('/edit-services', 'ServicesController@editServices')->name('edit.services');
+
+Route::get('/booking', 'BookingController@storeView')->name('booking');
+Route::post('/booking', 'BookingController@booking')->name('create.booking');
+
+Route::get('/check-room-booking', 'BookingController@checkRoom')->name('check.room.booking');
+
+Route::post('/getTariffPrice', 'TariffController@getTariffPrice')->name('getTariffPrice');
+Route::post('/getRoomPrice', 'RoomsController@getRoomPrice')->name('getRoomPrice');
+
+Route::post('/checkRoomBooking', 'BookingController@checkRoomBooking')->name('checkRoomBooking');
+
+Route::get('/clients', 'ClientController@clients')->name('clients');
+Route::post('/edit-client', 'ClientController@editClient')->name('edit.client');

@@ -19,11 +19,8 @@ class CreateTariffsTable extends Migration
             $table->string('treatment')->nullable();
             $table->string('nutrition')->nullable();
             $table->string('accommodation')->nullable();
-            $table->string('type_of_day');
-            $table->string('check_out_start');
-            $table->string('check_out_end');
             $table->integer('price');
-            $table->json('another');
+            $table->json('another')->nullable();
             $table->timestamps();
         });
     }

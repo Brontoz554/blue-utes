@@ -4,26 +4,27 @@ namespace App\Http\Middleware;
 
 use App\Providers\RouteServiceProvider;
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ManagerMiddleware
+class AdminMiddleware
 {
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {
         if (Auth::user() != null) {
-            if (Auth::user()->role->name == 'manager' || Auth::user()->role->name == 'admin') {
+            if (Auth::user()->role->name == 'admin') {
                 return $next($request);
             }
         } else {
             return redirect(RouteServiceProvider::PROFILE);
         }
+
+        return $next($request);
     }
 }

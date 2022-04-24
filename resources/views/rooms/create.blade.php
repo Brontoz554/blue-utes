@@ -17,16 +17,25 @@
     <div class='form-group required'>
         <label for="subject">Номер</label>
         {{ Form::text('number', null, ['class' => 'form form-control col-6']) }}
+        @error('number')
+        <div class="text-danger">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class='form-group required'>
         <label for="subject">Цена за сутки в ₽</label>
         {{ Form::text('price', null, ['class' => 'form form-control col-6']) }}
+        @error('price')
+        <div class="text-danger">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class='form-group required'>
         <label for="subject">Количество спальных мест</label>
         {{ Form::number('space', null, ['class' => 'form form-control col-6']) }}
+        @error('space')
+        <div class="text-danger">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class='form-group required'>
@@ -34,15 +43,6 @@
         {{ Form::textarea('description', null, ['class' => 'form form-control col-6']) }}
     </div>
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
     {!! Form::submit('Создать', ['class' => 'btn btn-dark w-25 mt-3']) !!}
 
     {!! Form::close() !!}
