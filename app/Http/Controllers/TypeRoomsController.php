@@ -23,7 +23,7 @@ class TypeRoomsController extends Controller
     {
         $types = RoomTypes::all();
 
-        return view('rooms.type.create', ['types' => $types]);
+        return view('management-system.rooms.type.create', ['types' => $types]);
     }
 
     /**

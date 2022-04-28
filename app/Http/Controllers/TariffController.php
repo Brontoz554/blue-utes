@@ -30,7 +30,7 @@ class TariffController extends Controller
         $eat = Eating::get();
         $services = Services::get();
 
-        return view('tariff.create', ['treatments' => $treatments, 'eat' => $eat, 'services' => $services]);
+        return view('management-system.tariff.create', ['treatments' => $treatments, 'eat' => $eat, 'services' => $services]);
     }
 
     /**
@@ -90,7 +90,7 @@ class TariffController extends Controller
     {
         $tariff = Tariff::get();
 
-        return view('tariff.index', ['tariff' => $tariff]);
+        return view('management-system.tariff.index', ['tariff' => $tariff]);
     }
 
     /**

@@ -17,7 +17,7 @@ class PagesController extends Controller
      */
     public function createView(): View
     {
-        return view('pages.create');
+        return view('management-content.pages.create');
     }
 
     /**
@@ -51,7 +51,7 @@ class PagesController extends Controller
     {
         $pages = Pages::all();
 
-        return view('pages.show', ['pages' => $pages]);
+        return view('management-content.pages.show', ['pages' => $pages]);
     }
 
     /**
@@ -76,7 +76,7 @@ class PagesController extends Controller
     {
         $page = Pages::find($id);
 
-        return view('pages.edit', ['page' => $page]);
+        return view('management-content.pages.edit', ['page' => $page]);
     }
 
     /**

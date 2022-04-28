@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Rooms;
+use App\RoomService;
 use App\RoomTypes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class RoomsController extends Controller
@@ -36,8 +38,9 @@ class RoomsController extends Controller
     public function createRoomView(): View
     {
         $types = RoomTypes::get();
+        $services = RoomService::get();
 
-        return view('rooms.create', ['types' => $types]);
+        return view('management-system.rooms.create', ['types' => $types, 'services' => $services]);
     }
 
     /**
@@ -47,7 +50,7 @@ class RoomsController extends Controller
     {
         $rooms = Rooms::get();
 
-        return view('rooms.index', ['rooms' => $rooms]);
+        return view('management-system.rooms.index', ['rooms' => $rooms]);
     }
 
     /**
@@ -69,8 +72,23 @@ class RoomsController extends Controller
             'space' => 'required',
         ], $messages);
 
-        $room = new Rooms($request->all());
-        $room->save();
+        DB::transaction(function () use ($request) {
+            $room = new Rooms([
+                'room_types_id' => $request->input('room_types_id'),
+                'number' => $request->input('number'),
+                'price' => $request->input('price'),
+                'space' => $request->input('space')
+            ]);
+            $room->save();
+
+            if ($request->input('another') == 'on') {
+                $ids = $request->input('servicesId');
+                $services = RoomService::find(explode(',', $ids));
+                $room->roomServices()->attach($services);
+            }
+
+        });
+
 
         return $this->createRoomView();
     }

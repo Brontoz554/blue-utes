@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\adminMiddleware;
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;

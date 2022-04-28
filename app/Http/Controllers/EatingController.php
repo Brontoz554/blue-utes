@@ -24,7 +24,7 @@ class EatingController extends Controller
     {
         $types = Eating::all();
 
-        return view('eating.create', ['types' => $types]);
+        return view('management-system.eating.create', ['types' => $types]);
     }
 
     /**

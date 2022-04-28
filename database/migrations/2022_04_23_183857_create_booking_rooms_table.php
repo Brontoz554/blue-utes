@@ -16,13 +16,21 @@ class CreateBookingRoomsTable extends Migration
         Schema::create('booking_rooms', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('room_id');
-            $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('tariff_id');
+
             $table->string('date_start');
             $table->string('date_end');
             $table->string('time_start');
             $table->string('time_end');
 
+            $table->integer('old');
+            $table->integer('new')->nullable();
+            $table->integer('price');
+            $table->integer('discount')->nullable();
+
             $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
+            $table->foreign('tariff_id')->references('id')->on('tariffs')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

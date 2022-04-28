@@ -46,7 +46,7 @@ class ClientController extends Controller
     {
         $clients = Client::get();
 
-        return view('clients.index', ['clients' => $clients]);
+        return view('management-system.clients.index', ['clients' => $clients]);
     }
 
 //    /**

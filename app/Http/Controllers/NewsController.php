@@ -18,7 +18,7 @@ class NewsController extends Controller
     {
         $this->middleware([
             'auth',
-//            'manager'
+            'manager'
         ]);
     }
 
@@ -29,7 +29,7 @@ class NewsController extends Controller
     {
         $news = News::all();
 
-        return view('news.index', ['news' => $news]);
+        return view('management-content.news.index', ['news' => $news]);
     }
 
     /**
@@ -37,7 +37,7 @@ class NewsController extends Controller
      */
     public function createView(): View
     {
-        return view('news.create');
+        return view('management-content.news.create');
     }
 
     /**
@@ -89,7 +89,7 @@ class NewsController extends Controller
     {
         $news = News::all();
 
-        return view('news.show', ['news' => $news]);
+        return view('management-content.news.show', ['news' => $news]);
     }
 
     /**
@@ -112,7 +112,7 @@ class NewsController extends Controller
     {
         $news = News::find($id);
 
-        return view('news.edit', ['news' => $news]);
+        return view('management-content.news.edit', ['news' => $news]);
     }
 
     /**

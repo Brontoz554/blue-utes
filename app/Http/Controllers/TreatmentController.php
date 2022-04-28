@@ -23,7 +23,7 @@ class TreatmentController extends Controller
     {
         $types = Treatment::all();
 
-        return view('treatment.create', ['types' => $types]);
+        return view('management-system.treatment.create', ['types' => $types]);
     }
 
     /**

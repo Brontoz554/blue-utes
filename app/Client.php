@@ -16,7 +16,7 @@ class Client extends Model
     {
         $client = new self([
             'name' => $request->name,
-            'number' => $request->phone,
+            'number' => $request->number,
             'mail' => $request->mail,
             'serial' => $request->serial,
             'passport_number' => $request->passport_number,

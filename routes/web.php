@@ -71,15 +71,21 @@ Route::post('/create-services', 'ServicesController@storeServices')->name('creat
 Route::get('/destroy-services/{id}', 'ServicesController@destroyService')->name('destroy.services');
 Route::post('/edit-services', 'ServicesController@editServices')->name('edit.services');
 
+Route::get('/booking-board', 'BookingController@index')->name('booking.board');
 Route::get('/booking', 'BookingController@storeView')->name('booking');
 Route::post('/booking', 'BookingController@booking')->name('create.booking');
 
 Route::get('/check-room-booking', 'BookingController@checkRoom')->name('check.room.booking');
+Route::post('/checkRoomBooking', 'BookingController@checkRoomBooking')->name('checkRoomBooking');
 
 Route::post('/getTariffPrice', 'TariffController@getTariffPrice')->name('getTariffPrice');
 Route::post('/getRoomPrice', 'RoomsController@getRoomPrice')->name('getRoomPrice');
 
-Route::post('/checkRoomBooking', 'BookingController@checkRoomBooking')->name('checkRoomBooking');
 
 Route::get('/clients', 'ClientController@clients')->name('clients');
 Route::post('/edit-client', 'ClientController@editClient')->name('edit.client');
+
+Route::get('/room-service', 'RoomServiceController@roomServiceView')->name('room.service.view');
+Route::post('/room-service', 'RoomServiceController@storeRoomService')->name('create.room.service');
+Route::get('/destroy-room-service/{id}', 'RoomServiceController@destroyRoomService')->name('destroy.room.service');
+Route::post('/edit-room-service', 'RoomServiceController@editRoomService')->name('edit.room.service');

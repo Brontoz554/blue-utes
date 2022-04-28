@@ -4,6 +4,8 @@ namespace App;
 
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
 
 class BookingRooms extends Model
@@ -13,12 +15,18 @@ class BookingRooms extends Model
     public static function bookingRoom($request, $id)
     {
         $bookingRooms = new BookingRooms([
+            'client_id' => $id,
+            'tariff_id' => $request->tariff,
+            'room_id' => $request->room,
             'date_start' => $request->date_start,
             'date_end' => $request->date_end,
             'time_start' => $request->time_start,
             'time_end' => $request->time_end,
-            'room_id' => $request->room,
-            'client_id' => $id,
+            'old' => $request->old,
+            'new' => $request->new,
+            'price' => $request->price,
+            'discount' => $request->discount,
+            'accommodation' => $request->accommodation == 'on',
         ]);
 
         $bookingRooms->save();
@@ -45,5 +53,29 @@ class BookingRooms extends Model
         }
 
         return false;
+    }
+
+    /**
+     * @return belongsTo
+     */
+    public function room(): belongsTo
+    {
+        return $this->belongsTo(Rooms::class);
+    }
+
+    /**
+     * @return belongsTo
+     */
+    public function client(): belongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function tariff(): BelongsTo
+    {
+        return $this->belongsTo(Tariff::class);
     }
 }

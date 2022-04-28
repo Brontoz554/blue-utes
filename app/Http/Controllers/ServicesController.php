@@ -23,7 +23,7 @@ class ServicesController extends Controller
     {
         $types = Services::all();
 
-        return view('services.create', ['types' => $types]);
+        return view('management-system.services.create', ['types' => $types]);
     }
 
     /**
