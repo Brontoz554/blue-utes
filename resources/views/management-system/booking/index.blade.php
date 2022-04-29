@@ -11,7 +11,6 @@
                 <b>название комнаты</b>
                 <div>{{ $room->number }}</div>
                 <hr>
-                {{--                СВЯЗАННЫЕ БРОНИРОВАНИЯ (НА ВСЕ ДАТЫ){{ $room->bookings }}--}}
                 @foreach ($room->bookings as $booking)
                     <b>информация о бронировании</b>
                     <div>{{ $booking }}</div>

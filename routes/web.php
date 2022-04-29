@@ -20,7 +20,6 @@ Route::get('/', function () {
 Route::get('/profile', 'HomeController@index')->name('profile');
 Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
 Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
-Route::get('/summernote-example', 'ExampleController@summernote')->name('summernote');
 
 Route::get('/create-news', 'NewsController@createView')->name('create.news.view');
 Route::post('/create-news', 'NewsController@store')->name('create.news');
@@ -89,3 +88,5 @@ Route::get('/room-service', 'RoomServiceController@roomServiceView')->name('room
 Route::post('/room-service', 'RoomServiceController@storeRoomService')->name('create.room.service');
 Route::get('/destroy-room-service/{id}', 'RoomServiceController@destroyRoomService')->name('destroy.room.service');
 Route::post('/edit-room-service', 'RoomServiceController@editRoomService')->name('edit.room.service');
+
+Route::get('/reception', 'ReceptionController@index')->name('reception');
