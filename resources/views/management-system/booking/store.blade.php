@@ -58,7 +58,7 @@
             <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
-        <div class="form-group required w-50">
+        <div class="form-group required w-50 ml-3">
             <label for="subject">Тариф</label>
             <select name="tariff" id="tariff" class="form-select col-12">
                 @foreach($tariff as $item)
@@ -73,14 +73,14 @@
 
     <div class="d-flex">
         <div class="d-flex w-50">
-            <div class="form-group required col-4 pl-0">
+            <div class="form-group required w-50">
                 <label for="subject">Взрослых</label>
                 {{ Form::number("old", 1, ["class" => "form form-control", 'min' => 1, 'id' => 'old']) }}
                 @error("old")
                 <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-            <div class="form-group required col-4 pr-0">
+            <div class="form-group required w-50">
                 <label for="subject">Дети до 5 лет</label>
                 {{ Form::number("new", 0, ["class" => "form form-control", "min" => 0, 'id' => 'new']) }}
                 @error("new")
@@ -119,13 +119,37 @@
         </div>
     </div>
 
-    <div class="form-group required pl-0">
+    <div class="form-group required pl-0 w-50">
         <label for="type">Кто бронирует</label>
-        <select name="type" id="type" class="form-select col-5">
+        <select name="type" id="type" class="form-select">
             <option value="1">Гость бронирует для себя</option>
             <option value="2">Контактное лицо бронирует для гостя</option>
             <option value="3">Бронирует контрагент</option>
         </select>
+    </div>
+
+    <div class="d-flex w-75">
+        <div class="form-group required w-50">
+            <label for="payment_type">Тип оплаты</label>
+            <select name="payment_type" id="payment_type" class="form form-select">
+                <option value="Наличными(при заселении)">Наличными(при заселении)</option>
+                <option value="Картой (при заселении)">Картой (при заселении)</option>
+                <option value="Перевод">Перевод</option>
+            </select>
+            @error("payment_type")
+            <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="form-group required w-50">
+            <label for="payment_state">Статус оплаты</label>
+            <select name="payment_state" id="payment_type" class="form form-select">
+                <option value="Оплачено">Оплачено</option>
+                <option value="Не оплачено">Не оплачено</option>
+            </select>
+            @error("discount")
+            <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
     </div>
 
     <fieldset class="bg-light p-4 mt-2 mb-2">

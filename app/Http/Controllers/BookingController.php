@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BookingRooms;
 use App\Client;
 use App\Rooms;
+use App\RoomTypes;
 use App\Tariff;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -20,9 +21,9 @@ class BookingController extends Controller
 
     public function index()
     {
-        $bookings = BookingRooms::get();
+        $roomTypes = RoomTypes::get();
 
-        return view('management-system.booking.index', ['bookings' => $bookings]);
+        return view('management-system.booking.index', ['roomTypes' => $roomTypes]);
     }
 
     /**
@@ -58,7 +59,8 @@ class BookingController extends Controller
                 if ($request->client_type == 'newClient') {
                     $client = Client::saveClient($request);
                 } else {
-                    $client = Client::where('number', '=', $request->oldClient)->increment('number_of_sessions');
+                    $client = Client::where('number', '=', $request->oldClient)->first();
+                    $client->increment('number_of_sessions');
                 }
                 BookingRooms::bookingRoom($request, $client->id);
             });

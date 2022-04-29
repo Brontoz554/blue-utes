@@ -14,8 +14,6 @@
                 <th>Цена за сутки</th>
                 <th>Лечение</th>
                 <th>Питание</th>
-                <th>Проживание</th>
-                <th>Расчётный тип</th>
                 <th>Доп.услуги</th>
                 <th></th>
             </tr>
@@ -43,12 +41,6 @@
                             @endforeach
                         @endif
                     </td>
-                    <td>
-                        @if($obj->accommodation)
-                            <div>Проживание включено</div>
-                        @endif
-                    </td>
-                    <td>{{ $obj->type_of_day }}</td>
                     <td>
                         @if($obj->nutrition)
                             @foreach($obj->services as $service)

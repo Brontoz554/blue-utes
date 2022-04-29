@@ -1,30 +1,26 @@
 @extends("layouts.adminLayout")
 @section("title", "шахматка")
 @section("content")
-    @foreach($bookings as $booking)
-        <div class="card container">
-            <div>
-                <p>Комната</p>
-                {{ $booking->room }}
+    <div class="container">
+        @foreach ($roomTypes as $roomType)
+            <div class="card p-3">
+            <b>название типа номера</b>
+            <div>{{ $roomType->name }}</div>
+            <hr>
+            @foreach ($roomType->rooms as $room)
+                <b>название комнаты</b>
+                <div>{{ $room->number }}</div>
                 <hr>
-            </div>
-            <div>
-                <p>клиент</p>
-                {{ $booking->client }}
-                <hr>
-            </div>
-
-            <div>
-                <p>тариф</p>
-                {{ $booking->tariff }}
-                <hr>
-            </div>
-
-            <div>
-                <p>информация о бронировании</p>
-                {{ $booking }}
-                <hr>
-            </div>
+                {{--                СВЯЗАННЫЕ БРОНИРОВАНИЯ (НА ВСЕ ДАТЫ){{ $room->bookings }}--}}
+                @foreach ($room->bookings as $booking)
+                    <b>информация о бронировании</b>
+                    <div>{{ $booking }}</div>
+                    <b>информация о клиенте</b>
+                    <div>{{ $booking->client }}</div>
+                    <hr>
+                @endforeach
+            @endforeach
         </div>
-    @endforeach
+        @endforeach
+    </div>
 @endsection

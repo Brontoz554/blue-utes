@@ -27,6 +27,8 @@ class BookingRooms extends Model
             'price' => $request->price,
             'discount' => $request->discount,
             'accommodation' => $request->accommodation == 'on',
+            'payment_type' => $request->accommodation == 'on',
+            'payment_state' => $request->accommodation == 'on',
         ]);
 
         $bookingRooms->save();
