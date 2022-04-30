@@ -227,23 +227,12 @@
         {{ Form::textarea("comment", null, ["class" => "form form-control"]) }}
     </div>
 
-    {{--    <div class="form-group required pl-0">--}}
-    {{--        <label for="type">Кто бронирует</label>--}}
-    {{--        <select name="type" id="type" class="form-select col-5">--}}
-    {{--            <option value="1">Стойка администратора</option>--}}
-    {{--            <option value="2">Сайт санатория</option>--}}
-    {{--            <option value="3">Электронная почта</option>--}}
-    {{--            <option value="4">Телефон</option>--}}
-    {{--        </select>--}}
-    {{--    </div>--}}
-
     {!! Form::submit("Создать", ["class" => "btn btn-dark w-25 mt-3"]) !!}
 
     {!! Form::close() !!}
 
-    <script src="{{ asset('/js/jquery.maskedinput.min.js') }}"></script>
-    <script defer>
-        $(document).ready(function () {
+    <script>
+        $(document).ready(function ($) {
             $("#number").mask("+7 (999) 999 99 99");
             $("#serial").mask("9999");
             $("#passport_number").mask("999999");
@@ -251,8 +240,7 @@
     </script>
     <script>
         $('#clientType').change(function () {
-            console.log($(this).val())
-            if ($(this).val() == 'newClient') {
+            if ($(this).val() === 'newClient') {
                 $('#newClient').show()
                 $('#oldClient').hide()
             } else {
@@ -323,7 +311,8 @@
                 },
 
                 success: function (response) {
-                    sessionStorage.setItem('tariff', response.price[0].price);
+                    sessionStorage.setItem('tariff', response.tariff[0].price);
+                    console.log(response)
                 },
             });
         }

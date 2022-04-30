@@ -20,7 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('main');
 
-Route::get('/profile', 'HomeController@index')->name('profile');
+Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/setwebhook-telegramm-bot', 'TelegramBotController@setWebhook');
 Route::any('/telegramm-bot-message', 'TelegramBotController@getMessage');
 
@@ -92,6 +92,8 @@ Route::get('/destroy-room-service/{id}', 'RoomServiceController@destroyRoomServi
 Route::post('/edit-room-service', 'RoomServiceController@editRoomService')->name('edit.room.service');
 
 Route::get('/reception', 'ReceptionController@index')->name('reception');
+
+Route::get('/kitchen', 'KitchenController@index')->name('kitchen');
 
 // НОВЫЕ МЕТОДЫ ДЛЯ AJAX/FETCH E.T.C
 Route::post('/changeDepartureTime', 'BookingController@changeDepartureTime')->name('changeDepartureTime');

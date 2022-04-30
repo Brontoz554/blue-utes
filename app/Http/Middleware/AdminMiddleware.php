@@ -22,7 +22,7 @@ class AdminMiddleware
                 return $next($request);
             }
         } else {
-            return redirect(RouteServiceProvider::PROFILE);
+            return redirect(RouteServiceProvider::HOME);
         }
 
         return $next($request);

@@ -126,7 +126,7 @@ class TariffController extends Controller
     public function getTariffPrice(Request $request): JsonResponse
     {
         return response()->json(
-            ['price' => Tariff::where('id', '=', $request->id)->get()]
+            ['tariff' => Tariff::where('id', '=', $request->id)->get()]
         );
     }
 }

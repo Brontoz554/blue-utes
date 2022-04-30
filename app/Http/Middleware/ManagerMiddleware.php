@@ -23,7 +23,7 @@ class ManagerMiddleware
                 return $next($request);
             }
         } else {
-            return redirect(RouteServiceProvider::PROFILE);
+            return redirect(RouteServiceProvider::HOME);
         }
     }
 }

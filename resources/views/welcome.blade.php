@@ -54,20 +54,6 @@
         }
     </style>
     <div class="flex-center position-ref full-height">
-        {{--        @if (Route::has('login'))--}}
-        {{--            <div class="top-right links">--}}
-        {{--                @auth--}}
-        {{--                    <a href="{{ route('profile') }}">Мой профиль</a>--}}
-        {{--                @else--}}
-        {{--                    <a href="{{ route('login') }}">Вход</a>--}}
-
-        {{--                    @if (Route::has('register'))--}}
-        {{--                        <a href="{{ route('register') }}">Регистрация</a>--}}
-        {{--                    @endif--}}
-        {{--                @endauth--}}
-        {{--            </div>--}}
-        {{--        @endif--}}
-
         <div class="content">
             <div class="title m-b-md" style="color: #7bc7ff">
                 Синий утёс
@@ -103,8 +89,7 @@
     {!! Form::submit('Заказать звонок', ['class' => 'btn btn-dark w-25 mt-3']) !!}
     {!! Form::close() !!}
 
-    <script src="{{ asset('/js/jquery.maskedinput.min.js') }}"></script>
-    <script defer>
+    <script>
         $(document).ready(function () {
             $("#phone").mask("+7 (999) 999 99 99");
         });
