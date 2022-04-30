@@ -11,6 +11,9 @@
 |
 */
 
+use App\BookingRooms;
+use Carbon\Carbon;
+
 Auth::routes();
 
 Route::get('/', function () {
@@ -70,16 +73,15 @@ Route::post('/create-services', 'ServicesController@storeServices')->name('creat
 Route::get('/destroy-services/{id}', 'ServicesController@destroyService')->name('destroy.services');
 Route::post('/edit-services', 'ServicesController@editServices')->name('edit.services');
 
+Route::post('/booking', 'BookingController@booking')->name('create.booking');
+Route::post('/checkRoomBooking', 'BookingController@checkRoomBooking')->name('checkRoomBooking');
+
 Route::get('/booking-board', 'BookingController@index')->name('booking.board');
 Route::get('/booking', 'BookingController@storeView')->name('booking');
-Route::post('/booking', 'BookingController@booking')->name('create.booking');
-
 Route::get('/check-room-booking', 'BookingController@checkRoom')->name('check.room.booking');
-Route::post('/checkRoomBooking', 'BookingController@checkRoomBooking')->name('checkRoomBooking');
 
 Route::post('/getTariffPrice', 'TariffController@getTariffPrice')->name('getTariffPrice');
 Route::post('/getRoomPrice', 'RoomsController@getRoomPrice')->name('getRoomPrice');
-
 
 Route::get('/clients', 'ClientController@clients')->name('clients');
 Route::post('/edit-client', 'ClientController@editClient')->name('edit.client');
@@ -90,3 +92,22 @@ Route::get('/destroy-room-service/{id}', 'RoomServiceController@destroyRoomServi
 Route::post('/edit-room-service', 'RoomServiceController@editRoomService')->name('edit.room.service');
 
 Route::get('/reception', 'ReceptionController@index')->name('reception');
+
+// НОВЫЕ МЕТОДЫ ДЛЯ AJAX/FETCH E.T.C
+Route::post('/changeDepartureTime', 'BookingController@changeDepartureTime')->name('changeDepartureTime');
+Route::post('/changeCheckInTime', 'BookingController@changeCheckInTime')->name('changeCheckInTime');
+
+Route::get('/sadasdasdsatest', function () {
+    $booking = BookingRooms::findOrFail(2);
+
+    $start = Carbon::parse($booking->date_start . ' ' . $booking->time_start);
+    $end = Carbon::parse($booking->date_end . ' ' . $booking->time_end);
+
+    $hoursAfter = $end->diffInHours($start);
+
+    $start = Carbon::parse('2022-04-30' . ' ' . '00:00');
+    $hoursBefore = $end->diffInHours($start);
+
+    dump(ceil(($hoursBefore / ($hoursAfter / 100)) * ($booking->price / 100)));
+//    dd(ceil(($hoursBefore / ($hoursAfter / 100)) * $booking->price));
+});

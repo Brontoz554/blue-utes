@@ -2,11 +2,12 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+
 
 class BookingRooms extends Model
 {
@@ -45,7 +46,10 @@ class BookingRooms extends Model
         $room = BookingRooms::where('room_id', '=', $id)->get();
         if (count($room) > 0) {
             foreach ($room as $booking) {
-                $period = CarbonPeriod::create($booking->date_start . ' ' . $booking->time_start, $booking->date_end . ' ' . $booking->time_end);
+                $period = CarbonPeriod::create(
+                    $booking->date_start . ' ' . $booking->time_start,
+                    $booking->date_end . ' ' . $booking->time_end
+                );
                 if ($period->contains($start) || $period->contains($end)) {
                     return true;
                 } else {
@@ -55,6 +59,34 @@ class BookingRooms extends Model
         }
 
         return false;
+    }
+
+    /**
+     * @param Request $request
+     * @param BookingRooms $booking
+     * @param bool $changeCheckIn
+     * @return float
+     */
+    public static function recalculatePrice(Request $request, BookingRooms $booking, bool $changeCheckIn = true): float
+    {
+        $start = Carbon::parse($booking->date_start . ' ' . $booking->time_start);
+        $end = Carbon::parse($booking->date_end . ' ' . $booking->time_end);
+
+        if ($changeCheckIn) {
+            $hoursAfter = $end->diffInHours($start);
+
+            $start = Carbon::parse($request->date . ' ' . $request->time);
+            $hoursBefore = $end->diffInHours($start);
+
+        } else {
+            $hoursAfter = $start->diffInHours($end);
+
+            $end = Carbon::parse($request->date . ' ' . $request->time);
+            $hoursBefore = $start->diffInHours($end);
+
+        }
+
+        return ceil(($hoursBefore / ($hoursAfter / 100)) * ($booking->price / 100));
     }
 
     /**

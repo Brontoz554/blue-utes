@@ -7,6 +7,7 @@ use App\Client;
 use App\Rooms;
 use App\RoomTypes;
 use App\Tariff;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,6 @@ use Illuminate\View\View;
 
 class BookingController extends Controller
 {
-
     public function index()
     {
         $roomTypes = RoomTypes::get();
@@ -67,6 +67,61 @@ class BookingController extends Controller
         }
 
         return Redirect::refresh();
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function changeDepartureTime(Request $request): JsonResponse
+    {
+        $booking = BookingRooms::findOrFail($request->id);
+
+        $booking->price = BookingRooms::recalculatePrice($request, $booking);
+        $booking->date_start = $request->date;
+        $booking->time_start = $request->time;
+
+        if ($booking->save()) {
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function changeCheckInTime(Request $request): JsonResponse
+    {
+        $booking = BookingRooms::findOrFail($request->id);
+
+        if ($booking->populated) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Нельзя изменить время заселения, клиент уже в заселился'
+            ]);
+        } else {
+            $booking->price = BookingRooms::recalculatePrice($request, $booking);
+            $booking->date_start = $request->date;
+            $booking->time_start = $request->time;
+
+            if ($booking->save()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Время заселения изменено (был произведён перерасчёт суммы)'
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'что-то пошло не так'
+        ]);
     }
 
     /**
@@ -140,4 +195,5 @@ class BookingController extends Controller
             ], $messages);
         }
     }
+
 }
