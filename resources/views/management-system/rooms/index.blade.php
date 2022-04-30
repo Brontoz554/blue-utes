@@ -25,27 +25,32 @@
                 <tr id="{{ $room->id }}">
                     <td>{{ $room->type->name }}</td>
                     <td>
-                        <input type="text" class="type-name form form-control" value="{{ $room->number }}"
-                               name="number">
+                        {{ $room->number }}
                     </td>
                     <td>
-                        <input type="text" class="type-name form form-control" value="{{ $room->price }}" name="price">
+                        {{ $room->price }}
                     </td>
                     <td>
-                        <input type="text" class="type-name form form-control" value="{{ $room->space }}" name="space">
+                        {{ $room->space }}
                     </td>
                     <td>{{ $room->state }}</td>
                     <td>
-                        @foreach($room->roomServices as $service)
-                            <div>{{ $service->name }}</div>
-                        @endforeach
+                        @if($room->another == 'on')
+                            @foreach($room->roomServices as $service)
+                                <div>{{ $service->name }}</div>
+                            @endforeach
+                        @endif
                     </td>
                     <td>
-                        <textarea type="text" class="type-name form form-control"
-                                  name="description">{!! $room->description !!}</textarea>
+                        {{ $room->description }}
                     </td>
                     <td>
-                        <a class="btn btn-default" href="{{ route('destroy.room', $room->id) }}">Удалить номер</a>
+                        <a class="btn btn-default" href="{{ route('destroy.room', $room->id) }}">
+                            Удалить номер
+                        </a>
+                        <a class="btn btn-default" href="{{ route('edit.room.view', $room->id) }}">
+                            Редактировать
+                        </a>
                     </td>
                 </tr>
             @endforeach
@@ -60,32 +65,5 @@
                 "searching": true,
             });
         });
-
-        $(".type-name").change(function () {
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "{{ route('edit.room') }}",
-                data: {
-                    id: $(this).parent().parent().attr("id"),
-                    name: $(this).attr('name'),
-                    option: $(this).val(),
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function () {
-                    $('.toast-top-right.success-message').show(300)
-                    setTimeout(() => {
-                        $('.toast-top-right.success-message').hide(300)
-                    }, 4000)
-                },
-                error: function () {
-                    $('.toast-top-right.error-message').show()
-                    setTimeout(() => {
-                        $('.toast-top-right.error-message').hide(300)
-                    }, 4000)
-                }
-            });
-        });
-
     </script>
 @endsection

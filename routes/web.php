@@ -50,7 +50,9 @@ Route::get('/create-room', 'RoomsController@createRoomView')->name('create.room.
 Route::get('/rooms', 'RoomsController@RoomView')->name('room.view');
 Route::post('/create-room', 'RoomsController@storeRoom')->name('create.room');
 Route::get('/destroy-room/{id}', 'RoomsController@destroyRoom')->name('destroy.room');
-Route::post('/edit-room', 'RoomsController@editRoom')->name('edit.room');
+//Route::post('/edit-room', 'RoomsController@editRoom')->name('edit.room');
+Route::get('/edit-room/{id}', 'RoomsController@editRoomView')->name('edit.room.view');
+Route::post('/edit-room/', 'RoomsController@editRoom')->name('edit.room');
 
 Route::get('/create-tariff', 'TariffController@createView')->name('create.tariff.view');
 Route::post('/create-tariff', 'TariffController@store')->name('create.tariff');

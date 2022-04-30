@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Rooms;
 use App\RoomService;
+use App\RoomServiceRoom;
 use App\RoomTypes;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class RoomsController extends Controller
@@ -18,18 +23,14 @@ class RoomsController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return JsonResponse
+     * @return View
      */
-    public function editRoom(Request $request): JsonResponse
+    public function RoomView(): View
     {
-        if (strlen($request->option) > 0) {
-            Rooms::where('id', $request->id)->update([
-                $request->name => $request->option,
-            ]);
-            return response()->json([]);
-        }
-        return response()->json([], 400);
+        $rooms = Rooms::get();
+        $services = RoomService::get();
+
+        return view('management-system.rooms.index', ['rooms' => $rooms, 'services' => $services]);
     }
 
     /**
@@ -44,33 +45,13 @@ class RoomsController extends Controller
     }
 
     /**
-     * @return View
-     */
-    public function RoomView(): View
-    {
-        $rooms = Rooms::get();
-
-        return view('management-system.rooms.index', ['rooms' => $rooms]);
-    }
-
-    /**
      * @param Request $request
      * @return View
+     * @throws ValidationException
      */
     public function storeRoom(Request $request): View
     {
-        $messages = [
-            'number.required' => 'Вы забыли заполнить номер номера',
-            'number.unique' => 'Такой номер уже есть',
-            'price.required' => 'Вы забыли заполнить цену за сутки проживания',
-            'space.required' => 'Вы забыли заполнить количество спальных мест',
-        ];
-
-        $request->validate([
-            'number' => 'required|unique:rooms',
-            'price' => 'required',
-            'space' => 'required',
-        ], $messages);
+        RoomsController::validateRequest($request);
 
         DB::transaction(function () use ($request) {
             $room = new Rooms([
@@ -86,9 +67,7 @@ class RoomsController extends Controller
                 $services = RoomService::find(explode(',', $ids));
                 $room->roomServices()->attach($services);
             }
-
         });
-
 
         return $this->createRoomView();
     }
@@ -113,5 +92,63 @@ class RoomsController extends Controller
         return response()->json(
             ['room' => Rooms::where('id', '=', $request->id)->get()]
         );
+    }
+
+    public function editRoomView($id)
+    {
+        $room = Rooms::find($id);
+        $types = RoomTypes::get();
+        $services = RoomService::get();
+
+        return view('management-system.rooms.edit', ['room' => $room, 'types' => $types, 'services' => $services]);
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ValidationException
+     */
+    public function editRoom(Request $request): RedirectResponse
+    {
+        RoomsController::validateRequest($request, $request->dataId);
+
+        Rooms::where('id', '=', $request->dataId)->update([
+            'room_types_id' => $request->room_types_id,
+            'number' => $request->number,
+            'price' => $request->price,
+            'space' => $request->space,
+            'description' => $request->description,
+            'another' => isset($request->another) ? 'on' : 'off',
+        ]);
+
+        if ($request->input('another') == 'on') {
+            $room = Rooms::where('id', '=', $request->dataId)->first();
+            $services = RoomService::find(explode(',', $request->input('servicesId')));
+            RoomServiceRoom::where('room_id', '=', $request->dataId)->delete();
+            $room->roomServices()->attach($services);
+        }
+
+        return Redirect::route('room.view');
+    }
+
+    public static function validateRequest(Request $request, $id = false)
+    {
+        if ($id) {
+            $uniqueRule = Rule::unique('rooms')->ignore($id);
+        } else {
+            $uniqueRule = 'unique:rooms';
+        }
+        $messages = [
+            'number.required' => 'Вы забыли заполнить номер номера',
+            'number.unique' => 'Такой номер уже есть',
+            'price.required' => 'Вы забыли заполнить цену за сутки проживания',
+            'space.required' => 'Вы забыли заполнить количество спальных мест',
+        ];
+
+        $request->validate([
+            'number' => "required|$uniqueRule",
+            'price' => 'required',
+            'space' => 'required',
+        ], $messages);
     }
 }
