@@ -22,27 +22,27 @@
             @foreach($tariff as $obj)
                 <tr id="{{ $obj->id }}">
                     <td>
-                        <input type="text" class="type-name form form-control" value="{{ $obj->name }}" name="name">
+                        {{ $obj->name }}
                     </td>
                     <td>
-                        <input type="text" class="type-name form form-control" value="{{ $obj->price }}" name="price">
+                        {{ $obj->price }}
                     </td>
                     <td>
-                        @if($obj->treatment)
+                        @if($obj->treatment == 'on')
                             @foreach($obj->treatments as $treatment)
                                 <div>{{ $treatment->name }}</div>
                             @endforeach
                         @endif
                     </td>
                     <td>
-                        @if($obj->nutrition)
+                        @if($obj->nutrition == 'on')
                             @foreach($obj->eatings as $eat)
                                 <div>{{ $eat->name }}</div>
                             @endforeach
                         @endif
                     </td>
                     <td>
-                        @if($obj->nutrition)
+                        @if($obj->another == 'on')
                             @foreach($obj->services as $service)
                                 <div>{{ $service->name }}</div>
                             @endforeach
@@ -50,6 +50,7 @@
                     </td>
                     <td>
                         <a class="btn btn-default" href="{{ route('destroy.tariff', $obj->id) }}">Удалить</a>
+                        <a class="btn btn-default" href="{{ route('edit.tariff.view', $obj->id) }}">Редактировать</a>
                     </td>
                 </tr>
             @endforeach
@@ -64,31 +65,5 @@
                 "searching": true,
             });
         });
-        $(".type-name").change(function () {
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "{{ route('edit.tariff') }}",
-                data: {
-                    id: $(this).parent().parent().attr("id"),
-                    name: $(this).attr('name'),
-                    option: $(this).val(),
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function () {
-                    $('.toast-top-right.success-message').show(300)
-                    setTimeout(() => {
-                        $('.toast-top-right.success-message').hide(300)
-                    }, 4000)
-                },
-                error: function () {
-                    $('.toast-top-right.error-message').show()
-                    setTimeout(() => {
-                        $('.toast-top-right.error-message').hide(300)
-                    }, 4000)
-                }
-            });
-        });
-
     </script>
 @endsection

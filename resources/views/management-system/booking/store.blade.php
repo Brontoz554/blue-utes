@@ -305,7 +305,7 @@
             $.ajax({
                 type: "post",
                 dataType: "json",
-                url: "{{ route('getTariffPrice') }}",
+                url: "{{ route('getTariffInfo') }}",
                 data: {
                     id: $('#tariff').val()
                 },

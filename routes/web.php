@@ -56,8 +56,9 @@ Route::post('/edit-room/', 'RoomsController@editRoom')->name('edit.room');
 
 Route::get('/create-tariff', 'TariffController@createView')->name('create.tariff.view');
 Route::post('/create-tariff', 'TariffController@store')->name('create.tariff');
-Route::get('/tariff', 'TariffController@index')->name('tariff');
-Route::post('/edit-tariff', 'TariffController@editTariff')->name('edit.tariff');
+Route::get('/tariffs', 'TariffController@index')->name('tariff');
+Route::get('/edit-tariff/{tariff}', 'TariffController@editTariffView')->name('edit.tariff.view');
+Route::post('/edit-tariff}', 'TariffController@editTariff')->name('edit.tariff');
 Route::get('/destroy-tariff/{id}', 'TariffController@destroyTariff')->name('destroy.tariff');
 
 Route::get('/treatment', 'TreatmentController@treatmentView')->name('treatment.view');
@@ -82,7 +83,7 @@ Route::get('/booking-board', 'BookingController@index')->name('booking.board');
 Route::get('/booking', 'BookingController@storeView')->name('booking');
 Route::get('/check-room-booking', 'BookingController@checkRoom')->name('check.room.booking');
 
-Route::post('/getTariffPrice', 'TariffController@getTariffPrice')->name('getTariffPrice');
+Route::post('/getTariffInfo', 'TariffController@getTariffInfo')->name('getTariffInfo');
 Route::post('/getRoomPrice', 'RoomsController@getRoomPrice')->name('getRoomPrice');
 
 Route::get('/clients', 'ClientController@clients')->name('clients');

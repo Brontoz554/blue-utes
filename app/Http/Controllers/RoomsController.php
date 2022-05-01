@@ -78,6 +78,7 @@ class RoomsController extends Controller
      */
     public function destroyRoom($id): View
     {
+        RoomServiceRoom::where('room_id', '=', $id)->delete();
         Rooms::destroy($id);
 
         return $this->RoomView();
@@ -110,27 +111,32 @@ class RoomsController extends Controller
      */
     public function editRoom(Request $request): RedirectResponse
     {
-        RoomsController::validateRequest($request, $request->dataId);
+        RoomsController::validateRequest($request, $request->input('dataId'));
 
-        Rooms::where('id', '=', $request->dataId)->update([
-            'room_types_id' => $request->room_types_id,
-            'number' => $request->number,
-            'price' => $request->price,
-            'space' => $request->space,
-            'description' => $request->description,
+        Rooms::where('id', '=', $request->input('dataId'))->update([
+            'room_types_id' => $request->input('room_types_id'),
+            'number' => $request->input('number'),
+            'price' => $request->input('price'),
+            'space' => $request->input('space'),
+            'description' => $request->input('description'),
             'another' => isset($request->another) ? 'on' : 'off',
         ]);
 
         if ($request->input('another') == 'on') {
-            $room = Rooms::where('id', '=', $request->dataId)->first();
+            $room = Rooms::where('id', '=', $request->input('dataId'))->first();
             $services = RoomService::find(explode(',', $request->input('servicesId')));
-            RoomServiceRoom::where('room_id', '=', $request->dataId)->delete();
+            RoomServiceRoom::where('room_id', '=', $request->input('dataId'))->delete();
             $room->roomServices()->attach($services);
         }
 
         return Redirect::route('room.view');
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return void
+     */
     public static function validateRequest(Request $request, $id = false)
     {
         if ($id) {
