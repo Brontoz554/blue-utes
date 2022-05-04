@@ -1,14 +1,18 @@
 @extends("layouts.adminLayout")
-@section("title", "Бронирование")
+@section("title", "Редактировать бронирование")
 @section("content")
 
     {!! Form::open(["action" =>"BookingController@booking", "method" => "POST", "class" => "container card p-4"])!!}
-    <h3>Бронирование</h3>
+    <h3>Редактировать бронирование</h3>
+    <ol>
+        <li>Имя клиента {{ $booking->client->name }}</li>
+        <li>Дата заселения {{ $booking->date_start }}</li>
+    </ol>
 
     <div class="d-flex align-items-baseline mb-3">
         <div class="w-25">
             <label>Дата заезда</label>
-            {{ Form::date("date_start", null, ["class" => "form form-control w-100", "id" => "date_start"]) }}
+            {{ Form::date("date_start", $booking->date_start, ["class" => "form form-control w-100", "id" => "date_start"]) }}
             @error("date_start")
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -16,7 +20,7 @@
 
         <div class="w-25">
             <label class="mt-3">Время заезда</label>
-            {{ Form::time("time_start", '00:00', ["class" => "form form-control w-100", "id" => "time_start"]) }}
+            {{ Form::time("time_start", $booking->time_start, ["class" => "form form-control w-100", "id" => "time_start"]) }}
             @error("time_start")
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -24,7 +28,7 @@
 
         <div class="ml-3 w-25">
             <label>Дата выезда</label>
-            {{ Form::date("date_end", null, ["class" => "form form-control w-100", "id"=> "date_end"]) }}
+            {{ Form::date("date_end", $booking->date_end, ["class" => "form form-control w-100", "id"=> "date_end"]) }}
             @error("date_end")
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -32,7 +36,7 @@
 
         <div class="w-25">
             <label class="mt-3">Время выезда</label>
-            {{ Form::time("time_end", '00:00', ["class" => "form form-control w-100", "id" => "time_end"]) }}
+            {{ Form::time("time_end", $booking->time_end, ["class" => "form form-control w-100", "id" => "time_end"]) }}
             @error("time_end")
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -75,14 +79,14 @@
         <div class="d-flex w-50">
             <div class="form-group required w-50">
                 <label for="subject">Взрослых</label>
-                {{ Form::number("old", 1, ["class" => "form form-control", 'min' => 1, 'id' => 'old']) }}
+                {{ Form::number("old", $booking->old, ["class" => "form form-control", 'min' => 1, 'id' => 'old']) }}
                 @error("old")
                 <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="form-group required w-50">
                 <label for="subject">Дети до 5 лет</label>
-                {{ Form::number("new", 0, ["class" => "form form-control", "min" => 0, 'id' => 'new']) }}
+                {{ Form::number("new", $booking->new, ["class" => "form form-control", "min" => 0, 'id' => 'new']) }}
                 @error("new")
                 <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -105,14 +109,14 @@
     <div class="d-flex w-50">
         <div class="form-group required w-50">
             <label for="subject">Общая стоимость</label>
-            {{ Form::number("price", null, ["class" => "form form-control", "min" => 0, "id" => 'price']) }}
+            {{ Form::number("price", $booking->price, ["class" => "form form-control", "min" => 0, "id" => 'price']) }}
             @error("price")
             <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
         <div class="form-group required w-50">
             <label for="subject">скидка в рублях</label>
-            {{ Form::number("discount", null, ["class" => "form form-control", "id" => "discount" ]) }}
+            {{ Form::number("discount", $booking->discount, ["class" => "form form-control", "id" => "discount" ]) }}
             @error("discount")
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -161,8 +165,8 @@
         <div id="newClient">
             <div class="d-flex">
                 <div class="col-4 pl-0">
-                    <label for="name">Имя гостя</label>
-                    {{ Form::text("name", null, ["class" => "form form-control"]) }}
+                    <label for="subject">Имя гостя</label>
+                    {{ Form::text("name", $booking->client->name, ["class" => "form form-control"]) }}
                     @error("name")
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -170,7 +174,7 @@
 
                 <div class="col-4">
                     <label for="number">Номер телефона</label>
-                    {{ Form::text("number", null, ["class" => "form form-control", 'id' => 'number']) }}
+                    {{ Form::text("number", $booking->client->number, ["class" => "form form-control", 'id' => 'number']) }}
                     @error("number")
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -178,7 +182,7 @@
 
                 <div class="col-4 pr-0">
                     <label for="mail">Почта</label>
-                    {{ Form::email("mail", null, ["class" => "form form-control", 'id' => 'mail']) }}
+                    {{ Form::email("mail", $booking->client->mail, ["class" => "form form-control", 'id' => 'mail']) }}
                     @error("mail")
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -187,7 +191,7 @@
             <div class="d-flex">
                 <div class="col-4 pl-0">
                     <label for="subject">Серия паспорта</label>
-                    {{ Form::text("serial", null, ["class" => "form form-control", 'id' => 'serial']) }}
+                    {{ Form::text("serial", $booking->client->serial, ["class" => "form form-control", 'id' => 'serial']) }}
                     @error("serial")
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -195,7 +199,7 @@
 
                 <div class="col-4">
                     <label for="subject">Номер паспорта</label>
-                    {{ Form::text("passport_number", null, ["class" => "form form-control", 'id' => 'passport_number']) }}
+                    {{ Form::text("passport_number", $booking->client->passport_number, ["class" => "form form-control", 'id' => 'passport_number']) }}
                     @error("passport_number")
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -203,7 +207,7 @@
 
                 <div class="col-4 pr-0">
                     <label for="subject">Дата выдачи</label>
-                    {{ Form::date("passport_data", null, ["class" => "form form-control", 'id' => 'passport_date']) }}
+                    {{ Form::date("passport_data", $booking->client->passport_data, ["class" => "form form-control", 'id' => 'passport_date']) }}
                     @error("passport_data")
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -224,10 +228,10 @@
 
     <div class="form-group required mt-2">
         <label>Комментарий</label>
-        {{ Form::textarea("comment", null, ["class" => "form form-control"]) }}
+        {{ Form::textarea("comment", $booking->comment, ["class" => "form form-control"]) }}
     </div>
 
-    {!! Form::submit("Создать", ["class" => "btn btn-dark w-25 mt-3"]) !!}
+    {!! Form::submit("Редактировать", ["class" => "btn btn-dark w-25 mt-3"]) !!}
 
     {!! Form::close() !!}
 

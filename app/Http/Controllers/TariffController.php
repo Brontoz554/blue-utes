@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Eating;
 use App\EatingTariff;
+use App\RoomTypes;
 use App\Services;
 use App\ServiceTariff;
 use App\Tariff;
@@ -33,10 +34,13 @@ class TariffController extends Controller
         $treatments = Treatment::get();
         $eat = Eating::get();
         $services = Services::get();
+        $roomTypes = RoomTypes::get();
 
         return view('management-system.tariff.create', [
             'treatments' => $treatments,
-            'eat' => $eat, 'services' => $services
+            'eat' => $eat,
+            'services' => $services,
+            'roomTypes' => $roomTypes,
         ]);
     }
 
@@ -55,8 +59,17 @@ class TariffController extends Controller
                 'treatment' => $request->input('treatment'),
                 'nutrition' => $request->input('nutrition'),
                 'another' => $request->input('another'),
+                'type_of_day' => $request->input('typeOfDay'),
             ]);
             $tariff->save();
+
+            $idTypes = explode(',', $request->input('roomTypeId'));
+            if (in_array('all', $idTypes)) {
+                $types = RoomTypes::get();
+            } else {
+                $types = RoomTypes::find($idTypes);
+            }
+            $tariff->roomTypes()->attach($types);
 
             if ($request->input('treatment') == 'on') {
                 $ids = $request->input('treatmentsId');
@@ -110,12 +123,14 @@ class TariffController extends Controller
         $treatments = Treatment::get();
         $eat = Eating::get();
         $services = Services::get();
+        $roomTypes = RoomTypes::get();
 
         return view('management-system.tariff.edit', [
             'tariff' => $tariff,
             'treatments' => $treatments,
             'eat' => $eat,
-            'services' => $services
+            'services' => $services,
+            'roomTypes' => $roomTypes
         ]);
     }
 
@@ -178,25 +193,35 @@ class TariffController extends Controller
         );
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return void
+     */
     public static function validateTariff(Request $request, $id = false)
     {
         if ($id) {
             $uniqueRule = Rule::unique('tariffs')->ignore($id);
+            $roomTypeId = '';
         } else {
             $uniqueRule = 'unique:tariffs';
+            $roomTypeId = 'required';
         }
 
         $messages = [
             'name.required' => 'Название тарифа обязательно',
             'name.unique' => 'Такое название тарифа уже занято',
             'price.required' => 'Цена тарифа обязательна',
+            'price.integer' => 'Цена должна быть числом',
             'check_out_start.required' => 'Время заселения обязательно',
             'check_out_end.required' => 'Время выселения обязательно',
+            'roomTypeId.required' => 'Вы забыли указать типы номеров, относящихся к тарифу',
         ];
 
         $request->validate([
             'name' => "required|$uniqueRule",
-            'price' => 'required',
+            'price' => 'required|integer',
+            'roomTypeId' => $roomTypeId,
         ], $messages);
     }
 }

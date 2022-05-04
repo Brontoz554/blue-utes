@@ -132,6 +132,11 @@ class RoomsController extends Controller
         return Redirect::route('room.view');
     }
 
+    public function repairRoom(Rooms $room)
+    {
+
+    }
+
     /**
      * @param Request $request
      * @param $id

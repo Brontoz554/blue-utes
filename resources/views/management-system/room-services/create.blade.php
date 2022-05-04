@@ -30,6 +30,7 @@
             <thead>
             <tr>
                 <th class="sorting">Название</th>
+                <th class="sorting">Цена</th>
                 <th class="sorting">Действия</th>
             </tr>
             </thead>
@@ -37,10 +38,17 @@
             @foreach($types as $type)
                 <tr class="odd">
                     <td>
-                        <input id="{{ $type->id }}" class="type-name form form-control w-75" type="text" value="{{ $type->name }}" name="name" data-target="{{ $type->name }}">
+                        <input id="{{ $type->id }}" class="type-name form form-control" type="text"
+                               value="{{ $type->name }}"
+                               name="name" data-target="{{ $type->name }}">
                     </td>
                     <td>
-                        <a class="btn btn-default" href="{{ route('destroy.room.service', $type->id) }}">Удалить тип питания</a>
+                        <input id="{{ $type->id }}" class="type-name form form-control w-50" type="text"
+                               value="{{ $type->price }}" name="price" data-target="{{ $type->price }}">
+                    </td>
+                    <td>
+                        <a class="btn btn-default" href="{{ route('destroy.room.service', $type->id) }}">Удалить тип
+                            питания</a>
                     </td>
                 </tr>
             @endforeach
@@ -49,29 +57,29 @@
     </div>
     <script>
         $(".type-name").change(function () {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    url: "{{ route('edit.eating') }}",
-                    data: {
-                        id: $(this).attr("id"),
-                        name: $(this).attr('name'),
-                        option: $(this).val(),
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function () {
-                        $('.toast-top-right.success-message').show(300)
-                        setTimeout(() => {
-                            $('.toast-top-right.success-message').hide(300)
-                        }, 4000)
-                    },
-                    error: function () {
-                        $('.toast-top-right.error-message').show()
-                        setTimeout(() => {
-                            $('.toast-top-right.error-message').hide(300)
-                        }, 4000)
-                    }
-                });
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "{{ route('edit.room.service') }}",
+                data: {
+                    id: $(this).attr("id"),
+                    name: $(this).attr('name'),
+                    option: $(this).val(),
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function () {
+                    $('.toast-top-right.success-message').show(300)
+                    setTimeout(() => {
+                        $('.toast-top-right.success-message').hide(300)
+                    }, 4000)
+                },
+                error: function () {
+                    $('.toast-top-right.error-message').show()
+                    setTimeout(() => {
+                        $('.toast-top-right.error-message').hide(300)
+                    }, 4000)
+                }
+            });
         });
 
     </script>

@@ -31,6 +31,7 @@
             <thead>
             <tr>
                 <th class="sorting">Название</th>
+                <th class="sorting">Цега</th>
                 <th class="sorting">Действия</th>
             </tr>
             </thead>
@@ -38,8 +39,12 @@
             @foreach($types as $type)
                 <tr class="odd">
                     <td>
-                        <input id="{{ $type->id }}" class="type-name form form-control w-75" type="text"
+                        <input id="{{ $type->id }}" class="type-name form form-control" type="text"
                                value="{{ $type->name }}" name="name" data-target="{{ $type->name }}">
+                    </td>
+                    <td>
+                        <input id="{{ $type->id }}" class="type-name form form-control w-50" type="text"
+                               value="{{ $type->price }}" name="price" data-target="{{ $type->price }}">
                     </td>
                     <td>
                         <a class="btn btn-default" href="{{ route('destroy.eating', $type->id) }}">Удалить тип

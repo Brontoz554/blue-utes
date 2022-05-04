@@ -12,6 +12,8 @@
             <tr>
                 <th>Название тарифа</th>
                 <th>Цена за сутки</th>
+                <th>расчётный тип</th>
+                <th>Типы номеров, которые входят в услуги тарифа</th>
                 <th>Лечение</th>
                 <th>Питание</th>
                 <th>Доп.услуги</th>
@@ -26,6 +28,14 @@
                     </td>
                     <td>
                         {{ $obj->price }}
+                    </td>
+                    <td>
+                        {{ $obj->type_of_day }}
+                    </td>
+                    <td>
+                        @foreach($obj->roomTypes as $type)
+                            <div>{{ $type->name }}</div>
+                        @endforeach
                     </td>
                     <td>
                         @if($obj->treatment == 'on')

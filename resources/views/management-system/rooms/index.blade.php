@@ -51,6 +51,9 @@
                         <a class="btn btn-default" href="{{ route('edit.room.view', $room->id) }}">
                             Редактировать
                         </a>
+                        <a class="btn btn-default" href="{{ route('repair.room', $room->id) }}">
+                            На ремонт
+                        </a>
                     </td>
                 </tr>
             @endforeach

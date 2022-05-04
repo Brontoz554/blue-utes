@@ -8,6 +8,7 @@ use App\Rooms;
 use App\RoomTypes;
 use App\Tariff;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +20,10 @@ use Illuminate\View\View;
 
 class BookingController extends Controller
 {
-    public function index()
+    /**
+     * @return View
+     */
+    public function index(): View
     {
         $roomTypes = RoomTypes::get();
 
@@ -147,6 +151,40 @@ class BookingController extends Controller
         ]);
     }
 
+    /**
+     * @param BookingRooms $booking
+     * @return RedirectResponse
+     * @throws Exception
+     */
+    public function destroyBooking(BookingRooms $booking): RedirectResponse
+    {
+        $booking->delete();
+
+        return Redirect::route('booking.board');
+    }
+
+    /**
+     * @param BookingRooms $booking
+     * @return View
+     */
+    public function editBooking(BookingRooms $booking): View
+    {
+        $tariff = Tariff::get();
+        $rooms = Rooms::get();
+        $clients = Client::get();
+
+        return view('management-system.booking.edit', [
+            'booking' => $booking,
+            'tariff' => $tariff,
+            'rooms' => $rooms,
+            'clients' => $clients,
+        ]);
+    }
+
+    /**
+     * @param $request
+     * @return void
+     */
     public static function validateRequest($request)
     {
         $messages = [

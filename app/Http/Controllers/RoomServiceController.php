@@ -23,7 +23,7 @@ class RoomServiceController extends Controller
     {
         $types = RoomService::all();
 
-        return view('management-system.room-service.create', ['types' => $types]);
+        return view('management-system.room-services.create', ['types' => $types]);
     }
 
     /**

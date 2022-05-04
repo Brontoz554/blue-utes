@@ -21,17 +21,49 @@
         @enderror
     </div>
 
+    <div class="form-group required col-12">
+        <label for="typeOfDay">Расчётный тип</label>
+        <select name="typeOfDay" id="typeOfDay" class="form form-select">
+            <option value="{{ $tariff->type_of_day }}" selected disabled>{{ $tariff->type_of_day }}</option>
+            <option value="Санаторный">Санаторный</option>
+            <option value="Гостинечный">Гостинечный</option>
+        </select>
+    </div>
+
+    <div class='form-group required col-12 d-flex'>
+        <div class="w-50">
+            Достунпые типы номеров
+            <select name="typesRooms" id="typesRooms" class="form form-control" multiple size="8">
+                <option class="option-typesRooms-element-select-all" value="all">Выбрать всё</option>
+                @foreach($roomTypes as $roomType)
+                    <option class="option-typesRooms-element" value="{{ $roomType->id }}">{{ $roomType->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="w-50">
+            Категории номеров для тарифа
+            <textarea class="form form-control" name="roomTypeList" id="roomTypeList" rows="7" disabled
+            >@foreach($tariff->roomTypes as $type){{ $type->name . "\n" }}@endforeach</textarea>
+            <input type="hidden" name="roomTypeId" id="roomTypeId"
+                   value="@foreach($tariff->roomTypes as $type){{ $type->id . ',' }}@endforeach">
+        </div>
+    </div>
+    @error('roomTypeId')
+    <div class="text-danger text-right">{{ $message }}</div>
+    @enderror
+
     <div class="form-group required col-12 pt-2" style="margin-bottom: 0 !important;">
-        <label for="subject">Лечение входит в стоимость</label>
+        <label for="treatment">Лечение входит в стоимость</label>
         <input name="treatment" type="checkbox" class="treatment-checkbox"
                @if($tariff->treatment == 'on') checked @endif>
     </div>
 
     <div class='form-group required col-12 d-flex'>
         <div class="w-50">
-            <label for="treatments">Список предоставляемых услуг лечения</label>
+            Список предоставляемых услуг лечения
             <select name="treatments" id="treatments" class="form form-control" @if($tariff->treatment != 'on') disabled
                     @endif multiple size="8">
+                <option class="option-treatment-element-select-all" value="all">Выбрать всё</option>
                 @foreach($treatments as $treatment)
                     <option class="option-treatment-element"
                             value="{{ $treatment->id }}">{{ $treatment->name }}</option>
@@ -39,7 +71,7 @@
             </select>
         </div>
         <div class="w-50">
-            <label for="treatmentsList">Услуги которые будут входить в тариф</label>
+            Услуги которые будут входить в тариф
             <textarea class="form form-control" name="treatmentsList" id="treatmentsList" rows="7" disabled
             >@foreach($tariff->treatments as $treatment){{ $treatment->name . "\n"}}@endforeach</textarea>
             <input type="hidden"
@@ -56,16 +88,17 @@
 
     <div class='form-group required col-12 d-flex'>
         <div class="w-50">
-            <label for="eating">Список предоставляемых услуг питания</label>
+            Список предоставляемых услуг питания
             <select name="eating" id="eating" class="form form-control" multiple size="8"
                     @if($tariff->nutrition != 'on') disabled @endif>
+                <option class="option-eating-element-select-all" value="all">Выбрать всё</option>
                 @foreach($eat as $item)
                     <option class="option-eating-element" value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
             </select>
         </div>
         <div class="w-50">
-            <label for="eatingList">Услуги которые будут входить в тариф</label>
+            Услуги которые будут входить в тариф
             <textarea class="form form-control" name="eatingList" id="eatingList" rows="7" disabled
             >@foreach($tariff->eatings as $nutrition){{ $nutrition->name . "\n"}}@endforeach</textarea>
             <input type="hidden" name="eatingId" id="eatingId"
@@ -80,16 +113,17 @@
 
     <div class='form-group required col-12 d-flex'>
         <div class="w-50">
-            <label for="services">Список предоставляемых услуг питания</label>
+            Список предоставляемых услуг питания
             <select name="services" id="services" class="form form-control" multiple size="8"
                     @if($tariff->another != 'on') disabled @endif>
+                <option class="option-services-element-select-all" value="all">Выбрать всё</option>
                 @foreach($services as $item)
                     <option class="option-services-element" value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
             </select>
         </div>
         <div class="w-50">
-            <label for="servicesList">Услуги которые будут входить в тариф</label>
+            Услуги которые будут входить в тариф
             <textarea class="form form-control" name="servicesList" id="servicesList" rows="7" disabled
             >@foreach($tariff->services as $service) {{ $service->name . "\n" }} @endforeach</textarea>
             <input type="hidden" name="servicesId" id="servicesId"
@@ -104,6 +138,19 @@
     {!! Form::close() !!}
 
     <script>
+        $('.option-typesRooms-element-select-all').click(function () {
+            let types = $('#roomTypeList')
+            let typesIds = $('#roomTypeId')
+            $.each($('.option-typesRooms-element'), function () {
+                addOrRemoveElems(types, typesIds, this)
+            })
+        });
+        $('.option-typesRooms-element').click(function () {
+            let types = $('#roomTypeList')
+            let typesIds = $('#roomTypeId')
+            addOrRemoveElems(types, typesIds, this)
+        });
+
         $('.treatment-checkbox').click(function () {
             if ($(this).is(':checked')) {
                 $('#treatments').removeAttr('disabled')
@@ -111,33 +158,22 @@
                 $('#treatments').attr('disabled', 'disabled')
             }
         });
-
         $('.option-treatment-element').click(function () {
             if ($('.treatment-checkbox').is(':checked')) {
                 let treatment = $('#treatmentsList')
                 let treatmentsId = $('#treatmentsId')
-                let thisValue = treatment.val()
-                let addedValue = $(this).html()
-                if (thisValue.includes(addedValue)) {
-
-                    treatment.val(thisValue.replaceAll(addedValue, "\n"))
-                    let clearList = []
-                    $.each((treatment.val()).split("\n"), function (key, value) {
-                        if (value !== '') {
-                            clearList.push(value)
-                        }
-                    })
-
-                    treatment.val(clearList.join("\n") + "\n")
-
-                    let treatValues = treatmentsId.val()
-                    treatmentsId.val(treatValues.replaceAll($(this).val() + ',', ''))
-                } else {
-                    treatment.val(treatment.val() + $(this).html() + "\n")
-                    treatmentsId.val(treatmentsId.val() + $(this).val() + ",")
-                }
+                addOrRemoveElems(treatment, treatmentsId, this)
             }
         });
+        $('.option-treatment-element-select-all').click(function () {
+            if ($('.treatment-checkbox').is(':checked')) {
+                let treatment = $('#treatmentsList')
+                let treatmentsId = $('#treatmentsId')
+                $.each($('.option-treatment-element'), function () {
+                    addOrRemoveElems(treatment, treatmentsId, this)
+                });
+            }
+        })
 
         $('.eating-checkbox').click(function () {
             if ($(this).is(':checked')) {
@@ -146,34 +182,22 @@
                 $('#eating').attr('disabled', 'disabled')
             }
         });
-
         $('.option-eating-element').click(function () {
             if ($('.eating-checkbox').is(':checked')) {
                 let eating = $('#eatingList')
                 let eatingId = $('#eatingId')
-                let thisValue = eating.val()
-                let addedValue = $(this).html()
-                if (thisValue.includes(addedValue)) {
-
-                    eating.val(thisValue.replaceAll(addedValue, "\n"))
-                    let clearList = []
-                    $.each((eating.val()).split("\n"), function (key, value) {
-                        if (value !== '') {
-                            clearList.push(value)
-                        }
-                    })
-
-                    eating.val(clearList.join("\n") + "\n")
-
-                    let treatValues = eatingId.val()
-                    eatingId.val(treatValues.replaceAll($(this).val() + ',', ''))
-                } else {
-                    eating.val(eating.val() + $(this).html() + "\n")
-                    eatingId.val(eatingId.val() + $(this).val() + ",")
-                }
+                addOrRemoveElems(eating, eatingId, this)
             }
         });
-
+        $('.option-eating-element-select-all').click(function () {
+            if ($('.eating-checkbox').is(':checked')) {
+                let eating = $('#eatingList')
+                let eatingId = $('#eatingId')
+                $.each($('.option-eating-element'), function () {
+                    addOrRemoveElems(eating, eatingId, this)
+                });
+            }
+        });
 
         $('.services-checkbox').click(function () {
             if ($(this).is(':checked')) {
@@ -182,36 +206,41 @@
                 $('#services').attr('disabled', 'disabled')
             }
         });
-
         $('.option-services-element').click(function () {
             if ($('.services-checkbox').is(':checked')) {
                 let services = $('#servicesList')
                 let servicesId = $('#servicesId')
-                let thisValue = services.val()
-                let addedValue = $(this).html()
-                if (thisValue.includes(addedValue)) {
-
-                    services.val(thisValue.replaceAll(addedValue, "\n"))
-                    let clearList = []
-                    $.each((services.val()).split("\n"), function (key, value) {
-                        if (value !== '') {
-                            clearList.push(value)
-                        }
-                    })
-
-                    services.val(clearList.join("\n") + "\n")
-
-                    let treatValues = servicesId.val()
-                    servicesId.val(treatValues.replaceAll($(this).val() + ',', ''))
-                } else {
-                    services.val(services.val() + $(this).html() + "\n")
-                    servicesId.val(servicesId.val() + $(this).val() + ",")
-                }
+                addOrRemoveElems(services, servicesId, this)
+            }
+        });
+        $('.option-services-element-select-all').click(function () {
+            if ($('.services-checkbox').is(':checked')) {
+                let services = $('#servicesList')
+                let servicesId = $('#servicesId')
+                $.each($('.option-services-element'), function () {
+                    addOrRemoveElems(services, servicesId, this)
+                })
             }
         });
 
-        function removeElem(iterator) {
-            $('#json-elem-' + iterator).remove()
+        function addOrRemoveElems(list, ids, elem) {
+            let thisValue = list.val()
+            let addedValue = $(elem).html()
+            let newList = [];
+            if (thisValue.includes(addedValue)) {
+                $.each((list.val()).split("\n"), function (key, value) {
+                    if (value !== addedValue) {
+                        newList.push(value)
+                    }
+                });
+                list.val(newList.join("\n"))
+
+                let treatValues = ids.val()
+                ids.val(treatValues.replaceAll($(elem).val() + ',', ''))
+            } else {
+                list.val(list.val() + $(elem).html() + "\n")
+                ids.val(ids.val() + $(elem).val() + ",")
+            }
         }
     </script>
 @endsection

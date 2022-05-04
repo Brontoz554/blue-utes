@@ -28,6 +28,7 @@
             <thead>
             <tr>
                 <th class="sorting">Название</th>
+                <th class="sorting">Цена</th>
                 <th class="sorting">Действия</th>
             </tr>
             </thead>
@@ -35,9 +36,12 @@
             @foreach($types as $type)
                 <tr class="odd">
                     <td>
-                        <input id="{{ $type->id }}" class="type-name form form-control w-75"
-                               value="{{ $type->name }}"
+                        <input id="{{ $type->id }}" class="type-name form form-control" value="{{ $type->name }}"
                                name="name" data-target="{{ $type->name }}">
+                    </td>
+                    <td>
+                        <input id="{{ $type->id }}" class="type-name form form-control w-50" value="{{ $type->price }}"
+                               name="price" data-target="{{ $type->price }}">
                     </td>
                     <td>
                         <a class="btn btn-default" href="{{ route('destroy.services', $type->id) }}">Удалить услугу</a>
