@@ -88,6 +88,7 @@ Route::get('/destroy-booking/{booking}', 'BookingController@destroyBooking')->na
 Route::get('/edit-booking/{booking}', 'BookingController@editBooking')->name('edit.booking');
 
 Route::post('/getTariffInfo', 'TariffController@getTariffInfo')->name('getTariffInfo');
+Route::post('/getTariffRoomInfo', 'TariffController@getTariffRoomInfo')->name('getTariffRoomInfo');
 Route::post('/getRoomPrice', 'RoomsController@getRoomPrice')->name('getRoomPrice');
 
 Route::get('/clients', 'ClientController@clients')->name('clients');

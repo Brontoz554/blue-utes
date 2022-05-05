@@ -42,9 +42,10 @@
     <div class="d-flex">
         <div class="form-group required w-50">
             <label for="room">Номер комнаты</label>
-            <select name="room" id="room" class="form-select col-12">
+            <select name="room" id="room" class="form-select col-12 rooms-select" disabled>
+                <option value="не выбрано" selected>Не выбрано</option>
                 @foreach($rooms as $room)
-                    <option value="{{ $room->id }}">
+                    <option class="room-render" value="{{ $room->id }}" data-target="{{ $room->type->name }}">
                         {{ $room->number }}
                         {{ $room->type->name }}
                     </option>
@@ -61,8 +62,9 @@
         <div class="form-group required w-50 ml-3">
             <label for="subject">Тариф</label>
             <select name="tariff" id="tariff" class="form-select col-12">
+                <option value="не выбрано" selected>Не выбрано</option>
                 @foreach($tariff as $item)
-                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                    <option class="tariff-item" value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
             </select>
             @error("tariff")
@@ -88,18 +90,18 @@
                 @enderror
             </div>
         </div>
-        <div class="form-group required col-6">
-            <label for="accommodation">Проживание входит в стоимость тарифа?</label>
-            <input type="checkbox" name="accommodation" id="accommodation" class="form form-check" checked>
-        </div>
-    </div>
+        {{--        <div class="form-group required col-6">--}}
+        {{--            <label for="accommodation">Проживание входит в стоимость тарифа?</label>--}}
+        {{--            <input type="checkbox" name="accommodation" id="accommodation" class="form form-check" checked>--}}
+        {{--        </div>--}}
 
-    <div class='form-group required w-25'>
-        <label for="type_of_day">Тип суток</label>
-        <select name="type_of_day" id="type_of_day" class="form form-select">
-            <option value="Санаторный">Санаторный</option>
-            <option value="Отельный">Отельный</option>
-        </select>
+        <div class='form-group required col-6'>
+            <label for="type_of_day">Тип суток</label>
+            <select name="type_of_day" id="type_of_day" class="form form-select">
+                <option value="Санаторный">Санаторный</option>
+                <option value="Отельный">Отельный</option>
+            </select>
+        </div>
     </div>
 
     <div class="d-flex w-50">
@@ -111,8 +113,32 @@
             @enderror
         </div>
         <div class="form-group required w-50">
-            <label for="subject">скидка в рублях</label>
+            <label for="subject">Скидка в рублях</label>
             {{ Form::number("discount", null, ["class" => "form form-control", "id" => "discount" ]) }}
+            @error("discount")
+            <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+
+    <div class="d-flex">
+        <div class="form-group required">
+            <label for="payment_type">Тип оплаты</label>
+            <select name="payment_type" id="payment_type" class="form form-select">
+                <option value="Наличными(при заселении)">Наличными(при заселении)</option>
+                <option value="Картой (при заселении)">Картой (при заселении)</option>
+                <option value="Перевод">Перевод</option>
+            </select>
+            @error("payment_type")
+            <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="form-group required">
+            <label for="payment_state">Статус оплаты</label>
+            <select name="payment_state" id="payment_type" class="form form-select">
+                <option value="Оплачено">Оплачено</option>
+                <option value="Не оплачено">Не оплачено</option>
+            </select>
             @error("discount")
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -126,30 +152,6 @@
             <option value="2">Контактное лицо бронирует для гостя</option>
             <option value="3">Бронирует контрагент</option>
         </select>
-    </div>
-
-    <div class="d-flex w-75">
-        <div class="form-group required w-50">
-            <label for="payment_type">Тип оплаты</label>
-            <select name="payment_type" id="payment_type" class="form form-select">
-                <option value="Наличными(при заселении)">Наличными(при заселении)</option>
-                <option value="Картой (при заселении)">Картой (при заселении)</option>
-                <option value="Перевод">Перевод</option>
-            </select>
-            @error("payment_type")
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-        <div class="form-group required w-50">
-            <label for="payment_state">Статус оплаты</label>
-            <select name="payment_state" id="payment_type" class="form form-select">
-                <option value="Оплачено">Оплачено</option>
-                <option value="Не оплачено">Не оплачено</option>
-            </select>
-            @error("discount")
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
     </div>
 
     <fieldset class="bg-light p-4 mt-2 mb-2">
@@ -239,6 +241,10 @@
         });
     </script>
     <script>
+        // getRoom();
+        // getTariff();
+        // checkBooking();
+
         $('#clientType').change(function () {
             if ($(this).val() === 'newClient') {
                 $('#newClient').show()
@@ -248,13 +254,33 @@
                 $('#oldClient').show()
             }
         })
-        getRoom();
-        getTariff();
-        checkBooking();
 
         $('#tariff').on('change', async function () {
             await getTariff();
             calculateTotalPrice();
+
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "{{ route('getTariffRoomInfo') }}",
+                data: {
+                    id: $('#tariff').val()
+                },
+
+                success: function (response) {
+                    $('.room-render').hide()
+                    $.each(response.tariff, function (key, val) {
+                        $.each($('.room-render'), function () {
+                            if ($(this).attr('data-target') === val.name) {
+                                $(this).show()
+                            }
+                        })
+                    })
+
+                    $('.rooms-select').removeAttr('disabled')
+                    $('.rooms-select').val('не выбрано')
+                },
+            });
         });
 
         $('#room').on('change', async function () {
@@ -312,7 +338,6 @@
 
                 success: function (response) {
                     sessionStorage.setItem('tariff', response.tariff[0].price);
-                    console.log(response)
                 },
             });
         }
@@ -328,8 +353,6 @@
 
                 success: function (response) {
                     sessionStorage.setItem('roomPrice', response.room[0].price);
-                    $('#old').val(1)
-                    $('#new').val(1)
                     $('#old').attr("max", response.room[0].space)
                     $('#new').attr("max", response.room[0].space - 2)
                 },

@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/telegramm-bot-message',
         '/getTariffInfo',
+        '/getTariffRoomInfo',
         '/getRoomPrice',
         '/checkRoomBooking',
     ];

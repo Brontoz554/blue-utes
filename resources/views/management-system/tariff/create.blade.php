@@ -116,6 +116,31 @@
         </div>
     </div>
 
+    <div class="col-6 mt-3">
+        <p><b>Условия предоплаты и отмены бронирования</b></p>
+        <span class="text-muted">Используются в подтверждениях, а так же для бронирований с сайта отеля или через виджет онлайн-бронирований</span>
+    </div>
+
+    <div class="form-group required col-12 mt-3">
+        <label for="irrevocable">Невозвратный тариф</label>
+        <input type="checkbox" name="irrevocable">
+    </div>
+
+    <div class="form-group required col-6 d-flex flex-column">
+        <div class="d-flex align-items-baseline justify-content-between mt-1">
+            <span>Предоплата(₽)</span>
+            <input type="number" name="prepayment" class="ml-1 form form-control w-50">
+        </div>
+        <div class="d-flex align-items-baseline justify-content-between mt-1 irrevocable">
+            <span>Бесплатная отмена за(₽)</span>
+            <input type="number" name="hour" class="ml-1 form form-control w-50">
+        </div>
+        <div class="d-flex align-items-baseline justify-content-between mt-1 irrevocable">
+            <span>штраф за поздний заезд(₽)</span>
+            <input type="number" name="fine" class="ml-1 form form-control w-50">
+        </div>
+    </div>
+
     {!! Form::submit('Создать', ['class' => 'btn btn-dark w-25 mt-3']) !!}
 
     {!! Form::close() !!}

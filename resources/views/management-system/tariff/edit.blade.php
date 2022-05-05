@@ -133,7 +133,7 @@
 
     <input type="hidden" name="id" value="{{ $tariff->id }}">
 
-    {!! Form::submit('Создать', ['class' => 'btn btn-dark w-25 mt-3']) !!}
+    {!! Form::submit('Редактировать', ['class' => 'btn btn-dark w-25 mt-3']) !!}
 
     {!! Form::close() !!}
 

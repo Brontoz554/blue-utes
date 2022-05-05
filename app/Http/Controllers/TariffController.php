@@ -8,6 +8,7 @@ use App\RoomTypes;
 use App\Services;
 use App\ServiceTariff;
 use App\Tariff;
+use App\TariffRooms;
 use App\Treatment;
 use App\TreatmentTariff;
 use Illuminate\Http\JsonResponse;
@@ -143,6 +144,8 @@ class TariffController extends Controller
         TariffController::validateTariff($request, $request->input('id'));
 
         DB::transaction(function () use ($request) {
+            $tariff = Tariff::where('id', '=', $request->input('id'))->first();
+
             Tariff::where('id', '=', $request->input('id'))->update([
                 'name' => $request->input('name'),
                 'price' => $request->input('price'),
@@ -151,12 +154,20 @@ class TariffController extends Controller
                 'another' => isset($request->another) ? 'on' : 'off',
             ]);
 
+            $idTypes = explode(',', $request->input('roomTypeId'));
+            if (in_array('all', $idTypes)) {
+                $types = RoomTypes::get();
+            } else {
+                $types = RoomTypes::find($idTypes);
+            }
+            $test = TariffRooms::where('tariff_id', '=', $tariff->id)->delete();
+            $tariff->roomTypes()->attach($types);
+
             if ($request->input('treatment') == 'on') {
                 $ids = $request->input('treatmentsId');
                 $treatments = Treatment::find(explode(',', $ids));
 
                 TreatmentTariff::where('tariff_id', '=', $request->input('id'))->delete();
-                $tariff = Tariff::where('id', '=', $request->input('id'))->first();
                 $tariff->treatments()->attach($treatments);
             }
 
@@ -165,7 +176,6 @@ class TariffController extends Controller
                 $nutritious = Eating::find(explode(',', $ids));
 
                 EatingTariff::where('tariff_id', '=', $request->input('id'))->delete();
-                $tariff = Tariff::where('id', '=', $request->input('id'))->first();
                 $tariff->eatings()->attach($nutritious);
             }
 
@@ -174,7 +184,6 @@ class TariffController extends Controller
                 $nutritious = Services::find(explode(',', $ids));
 
                 ServiceTariff::where('tariff_id', '=', $request->input('id'))->delete();
-                $tariff = Tariff::where('id', '=', $request->input('id'))->first();
                 $tariff->services()->attach($nutritious);
             }
         });
@@ -190,6 +199,18 @@ class TariffController extends Controller
     {
         return response()->json(
             ['tariff' => Tariff::where('id', '=', $request->id)->get()]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getTariffRoomInfo(Request $request): JsonResponse
+    {
+        $tariff = Tariff::where('id', '=', $request->id)->first();
+        return response()->json(
+            ['tariff' => $tariff->roomTypes]
         );
     }
 

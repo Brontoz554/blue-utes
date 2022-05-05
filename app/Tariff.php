@@ -38,6 +38,6 @@ class Tariff extends Model
      */
     public function roomTypes(): BelongsToMany
     {
-        return $this->belongsToMany(RoomTypes::class, 'tariff_rooms', 'room_types_id', 'tariff_id');
+        return $this->belongsToMany(RoomTypes::class, 'tariff_rooms', 'tariff_id', 'room_types_id');
     }
 }
