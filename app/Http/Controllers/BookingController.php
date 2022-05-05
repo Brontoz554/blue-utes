@@ -7,7 +7,6 @@ use App\Client;
 use App\Rooms;
 use App\RoomTypes;
 use App\Tariff;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -26,8 +25,22 @@ class BookingController extends Controller
     public function index(): View
     {
         $roomTypes = RoomTypes::get();
+        $json = [];
+        foreach ($roomTypes as $roomType) {
+            $json[$roomType->name]['rooms'] = collect($roomType->rooms);
+            foreach ($roomType->rooms as $room) {
+                $json[$roomType->name]['rooms']['bookings'] = collect($room->bookings);
+                foreach ($room->bookings as $booking) {
+                    $json[$roomType->name]['rooms']['client'] = collect($booking->client);
+                    $json[$roomType->name]['rooms']['tariff'] = collect($booking->tariff);
+                    $json[$roomType->name]['rooms']['tariff']['treatments'] = collect($booking->tariff->treatments);
+                    $json[$roomType->name]['rooms']['tariff']['eatings'] = collect($booking->tariff->eatings);
+                    $json[$roomType->name]['rooms']['tariff']['services'] = collect($booking->tariff->services);
+                }
+            }
+        }
 
-        return view('management-system.booking.index', ['roomTypes' => $roomTypes]);
+        return view('management-system.booking.index', ['roomTypes' => $roomTypes, 'json' => collect($json)->toJson()]);
     }
 
     /**
