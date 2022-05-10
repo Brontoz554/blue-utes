@@ -41,7 +41,13 @@ class BookingController extends Controller
             }
         }
 
-        return view('management-system.booking.index', ['roomTypes' => $roomTypes, 'json' => collect($json)->toJson()]);
+        $data = [
+            ['id' => 1, 'name' => 'Admin'],
+            ['id' => 2, 'name' => 'Truehero'],
+            ['id' => 3, 'name' => 'Truecoder'],
+        ];
+
+        return view('management-system.booking.index', ['roomTypes' => $roomTypes, 'json' => collect($json)->toJson(), 'data' => $data]);
     }
 
     /**
