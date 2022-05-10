@@ -26,6 +26,24 @@ class BookingController extends Controller
     public function index(): View
     {
         $roomTypes = RoomTypes::get();
+        return view('management-system.booking.index', ['roomTypes' => $roomTypes]);
+    }
+
+    /**
+     * @return View
+     */
+    public function indexView(): View
+    {
+        return view('management-system.booking.test');
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getBookings()
+    {
+        $roomTypes = RoomTypes::get();
+
         $json = [];
         foreach ($roomTypes as $roomType) {
             foreach ($roomType->rooms as $room) {
@@ -37,16 +55,11 @@ class BookingController extends Controller
                     $json[$roomType->name][$room->number][$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
                 }
             }
-//            $json[$roomType->name]['rooms'] = collect($roomType->rooms)->toArray();
         }
 
-        $data = [
-            ['id' => 1, 'name' => 'Admin'],
-            ['id' => 2, 'name' => 'Truehero'],
-            ['id' => 3, 'name' => 'Truecoder'],
-        ];
-
-        return view('management-system.booking.index', ['roomTypes' => $roomTypes, 'json' => $json, 'data' => $data]);
+        return response()->json([
+            'data' => $json
+        ]);
     }
 
     /**
