@@ -41,7 +41,6 @@ class BookingController extends Controller
             }
         }
 
-        dd($json);
         return view('management-system.booking.index', ['roomTypes' => $roomTypes, 'json' => collect($json)->toJson()]);
     }
 
