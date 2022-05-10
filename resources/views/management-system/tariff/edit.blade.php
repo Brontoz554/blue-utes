@@ -133,6 +133,30 @@
 
     <input type="hidden" name="id" value="{{ $tariff->id }}">
 
+    <div class="form-group required col-12 mt-3">
+        <label for="irrevocable">Невозвратный тариф</label>
+        <input type="checkbox" name="irrevocable" id="irrevocable">
+    </div>
+
+    <div class="form-group required col-8 d-flex flex-column">
+        <div class="d-flex mt-1 align-items-baseline">
+            <span>Предоплата</span>
+            <input type="number" name="prepayment" class="ml-1 form form-control col-2"
+                   value="{{ $tariff->prepayment }}">
+            <span>₽</span>
+        </div>
+        <div class="d-flex mt-1 align-items-baseline irrevocable">
+            <span>Бесплатная отмена за</span>
+            <input type="number" name="hour" class="ml-1 form form-control col-2" value="{{ $tariff->hour }}">
+            <span>часов до заезда</span>
+        </div>
+        <div class="d-flex mt-1 align-items-baseline irrevocable">
+            <span>штраф за позднюю отмену</span>
+            <input type="number" name="fine" class="ml-1 form form-control col-2" value="{{ $tariff->prepayment }}">
+            <span>₽</span>
+        </div>
+    </div>
+
     {!! Form::submit('Редактировать', ['class' => 'btn btn-dark w-25 mt-3']) !!}
 
     {!! Form::close() !!}

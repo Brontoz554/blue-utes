@@ -1,11 +1,10 @@
 @extends('layouts.adminLayout')
 @section('title', 'Номера')
 @section('content')
-
-    <div class="p-0 pt-5">
-        <a href="{{ route('create.room.view') }}" class="btn btn-default col-3">
-            Создать номер
-        </a>
+    <a href="{{ route('create.room.view') }}" class="btn btn-secondary mb-3">
+        Создать номер
+    </a>
+    <div class="p-0">
         <h3 class="p-2">Номера</h3>
         <table id="rooms" class="table table-bordered table-striped dataTable dtr-inline">
             <thead>
@@ -45,15 +44,17 @@
                         {{ $room->description }}
                     </td>
                     <td>
-                        <a class="btn btn-default" href="{{ route('destroy.room', $room->id) }}">
-                            Удалить номер
-                        </a>
-                        <a class="btn btn-default" href="{{ route('edit.room.view', $room->id) }}">
-                            Редактировать
-                        </a>
-                        <a class="btn btn-default" href="{{ route('repair.room', $room->id) }}">
-                            На ремонт
-                        </a>
+                        <div class="d-flex flex-column">
+                            <a class="btn btn-default" href="{{ route('destroy.room', $room->id) }}">
+                                Удалить номер
+                            </a>
+                            <a class="btn btn-default" href="{{ route('edit.room.view', $room->id) }}">
+                                Редактировать
+                            </a>
+                            <a class="btn btn-default" href="{{ route('repair.room', $room->id) }}">
+                                На ремонт
+                            </a>
+                        </div>
                     </td>
                 </tr>
             @endforeach

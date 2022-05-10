@@ -3,6 +3,9 @@
 @section('content')
 
     {!! Form::open(['action' =>'TariffController@store', 'method' => 'POST', 'class' => 'container card p-4 col-8'])!!}
+    @if(Session::has('success'))
+        <p class="alert-success p-2">{{ Session::get('success') }}</p>
+    @endif
     <h3>Создание тарифа</h3>
 
     <div class='form-group required col-12'>
@@ -33,7 +36,7 @@
         <div class="w-50">
             Достунпые типы номеров
             <select name="typesRooms" id="typesRooms" class="form form-control" multiple size="8">
-                <option class="option-typesRooms-element-select-all" value="all">Выбрать всё</option>
+                <option class="option-typesRooms-element-select-all" value="all" data-target="add">Выбрать всё</option>
                 @foreach($roomTypes as $roomType)
                     <option class="option-typesRooms-element" value="{{ $roomType->id }}">{{ $roomType->name }}</option>
                 @endforeach
@@ -123,21 +126,24 @@
 
     <div class="form-group required col-12 mt-3">
         <label for="irrevocable">Невозвратный тариф</label>
-        <input type="checkbox" name="irrevocable">
+        <input type="checkbox" name="irrevocable" id="irrevocable">
     </div>
 
-    <div class="form-group required col-6 d-flex flex-column">
-        <div class="d-flex align-items-baseline justify-content-between mt-1">
-            <span>Предоплата(₽)</span>
-            <input type="number" name="prepayment" class="ml-1 form form-control w-50">
+    <div class="form-group required col-8 d-flex flex-column">
+        <div class="d-flex mt-1 align-items-baseline">
+            <span>Предоплата</span>
+            {{ Form::number('prepayment', null, ['class' => 'ml-1 form form-control col-2']) }}
+            <span>₽</span>
         </div>
-        <div class="d-flex align-items-baseline justify-content-between mt-1 irrevocable">
-            <span>Бесплатная отмена за(₽)</span>
-            <input type="number" name="hour" class="ml-1 form form-control w-50">
+        <div class="d-flex mt-1 align-items-baseline irrevocable">
+            <span>Бесплатная отмена за</span>
+            {{ Form::number('hour', null, ['class' => 'ml-1 form form-control col-2']) }}
+            <span>часов до заезда</span>
         </div>
-        <div class="d-flex align-items-baseline justify-content-between mt-1 irrevocable">
-            <span>штраф за поздний заезд(₽)</span>
-            <input type="number" name="fine" class="ml-1 form form-control w-50">
+        <div class="d-flex mt-1 align-items-baseline irrevocable">
+            <span>штраф за позднюю отмену</span>
+            {{ Form::number('fine', null, ['class' => 'ml-1 form form-control col-2']) }}
+            <span>₽</span>
         </div>
     </div>
 
@@ -146,11 +152,28 @@
     {!! Form::close() !!}
 
     <script>
+        $('#irrevocable').click(function () {
+            if ($(this).is(':checked')) {
+                $('div.irrevocable').css({
+                    'opacity': '0'
+                })
+            } else {
+                $('div.irrevocable').css({
+                    'opacity': '1'
+                })
+            }
+        });
+
         $('.option-typesRooms-element-select-all').click(function () {
             let types = $('#roomTypeList')
             let typesIds = $('#roomTypeId')
             $.each($('.option-typesRooms-element'), function () {
-                addOrRemoveElems(types, typesIds, this)
+                let thisValue = types.val()
+                let addedValue = $(this).html()
+                if (!thisValue.includes(addedValue)) {
+                    types.val(types.val() + $(this).html() + "\n")
+                    typesIds.val(typesIds.val() + $(this).val() + ",")
+                }
             })
         });
         $('.option-typesRooms-element').click(function () {
@@ -178,7 +201,12 @@
                 let treatment = $('#treatmentsList')
                 let treatmentsId = $('#treatmentsId')
                 $.each($('.option-treatment-element'), function () {
-                    addOrRemoveElems(treatment, treatmentsId, this)
+                    let thisValue = treatment.val()
+                    let addedValue = $(this).html()
+                    if (!thisValue.includes(addedValue)) {
+                        treatment.val(treatment.val() + $(this).html() + "\n")
+                        treatmentsId.val(treatmentsId.val() + $(this).val() + ",")
+                    }
                 });
             }
         })
@@ -202,7 +230,12 @@
                 let eating = $('#eatingList')
                 let eatingId = $('#eatingId')
                 $.each($('.option-eating-element'), function () {
-                    addOrRemoveElems(eating, eatingId, this)
+                    let thisValue = eating.val()
+                    let addedValue = $(this).html()
+                    if (!thisValue.includes(addedValue)) {
+                        eating.val(eating.val() + $(this).html() + "\n")
+                        eatingId.val(eatingId.val() + $(this).val() + ",")
+                    }
                 });
             }
         });
@@ -226,7 +259,12 @@
                 let services = $('#servicesList')
                 let servicesId = $('#servicesId')
                 $.each($('.option-services-element'), function () {
-                    addOrRemoveElems(services, servicesId, this)
+                    let thisValue = services.val()
+                    let addedValue = $(this).html()
+                    if (!thisValue.includes(addedValue)) {
+                        services.val(services.val() + $(this).html() + "\n")
+                        servicesId.val(servicesId.val() + $(this).val() + ",")
+                    }
                 })
             }
         });

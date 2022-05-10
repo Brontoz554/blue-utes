@@ -12,6 +12,7 @@
 */
 
 use App\BookingRooms;
+use App\Tariff;
 use Carbon\Carbon;
 
 Auth::routes();
@@ -85,7 +86,9 @@ Route::get('/booking-board', 'BookingController@index')->name('booking.board');
 Route::get('/booking', 'BookingController@storeView')->name('booking');
 Route::get('/check-room-booking', 'BookingController@checkRoom')->name('check.room.booking');
 Route::get('/destroy-booking/{booking}', 'BookingController@destroyBooking')->name('destroy.booking');
-Route::get('/edit-booking/{booking}', 'BookingController@editBooking')->name('edit.booking');
+Route::get('/edit-booking/{booking}', 'BookingController@editBookingView')->name('edit.booking.view');
+Route::post('/edit-booking/', 'BookingController@editBooking')->name('edit.booking');
+Route::get('/edit-nutrition-booking/{booking}', 'BookingController@editNutritionBooking')->name('edit.nutrition.view');
 
 Route::post('/getTariffInfo', 'TariffController@getTariffInfo')->name('getTariffInfo');
 Route::post('/getTariffRoomInfo', 'TariffController@getTariffRoomInfo')->name('getTariffRoomInfo');
@@ -107,17 +110,11 @@ Route::get('/kitchen', 'KitchenController@index')->name('kitchen');
 Route::post('/changeDepartureTime', 'BookingController@changeDepartureTime')->name('changeDepartureTime');
 Route::post('/changeCheckInTime', 'BookingController@changeCheckInTime')->name('changeCheckInTime');
 
-Route::get('/sadasdasdsatest', function () {
-    $booking = BookingRooms::findOrFail(2);
-
-    $start = Carbon::parse($booking->date_start . ' ' . $booking->time_start);
-    $end = Carbon::parse($booking->date_end . ' ' . $booking->time_end);
-
-    $hoursAfter = $end->diffInHours($start);
-
-    $start = Carbon::parse('2022-04-30' . ' ' . '00:00');
-    $hoursBefore = $end->diffInHours($start);
-
-    dump(ceil(($hoursBefore / ($hoursAfter / 100)) * ($booking->price / 100)));
+Route::get('/bla', function () {
+    $tariff = Tariff::where('id', '=', 20)->first();
+    $tariff['treatment'] = $tariff->treatments;
+    $tariff['services'] = $tariff->services;
+    $tariff['eatings'] = $tariff->eatings;
+    dd($tariff);
 //    dd(ceil(($hoursBefore / ($hoursAfter / 100)) * $booking->price));
 });

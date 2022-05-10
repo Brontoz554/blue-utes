@@ -10,7 +10,7 @@
                 <th class="col-2">Имя</th>
                 <th>Номер телефона</th>
                 <th class="col-2">почтовый ящик</th>
-                <th>Паспортные данные (серия-номер) дата регистрации</th>
+                <th>Паспортные данные</th>
                 <th>Комментарии о клиенте</th>
                 <th>Количество посещений</th>
             </tr>
@@ -19,26 +19,32 @@
             @foreach($clients as $client)
                 <tr id="{{ $client->id }}">
                     <td>
-                        <input name="name" type="text" class="form form-control attribute" value="{{ $client->name }}">
+{{--                        <input name="name" type="text" class="form form-control attribute" value="{{ $client->name }}">--}}
+                    {{ $client->name }}
                     </td>
                     <td>
-                        <input name="number" type="text" class="form form-control attribute" value="{{ $client->number }}">
+{{--                        <input name="number" type="text" class="form form-control attribute" value="{{ $client->number }}">--}}
+                    {{ $client->number }}
                     </td>
                     <td>
-                        <input name="mail" type="text" class="form form-control attribute" value="{{ $client->mail }}">
+{{--                        <input name="mail" type="text" class="form form-control attribute" value="{{ $client->mail }}">--}}
+                        {{ $client->mail }}
                     </td>
                     <td>
-                        <div class="text-muted">серия:
-                            <input type="text" name="serial" value="{{ $client->serial }}"
-                                   class="form form-control col-6">
+                        <div>серия:
+{{--                            <input type="text" name="serial" value="{{ $client->serial }}"--}}
+{{--                                   class="form form-control col-6">--}}
+                            {{ $client->serial }}
                         </div>
-                        <div class="text-muted">номер:
-                            <input type="text" name="passport_number" value="{{ $client->passport_number }}"
-                                   class="form form-control col-6">
+                        <div>номер:
+{{--                            <input type="text" name="passport_number" value="{{ $client->passport_number }}"--}}
+{{--                                   class="form form-control col-6">--}}
+                            {{ $client->passport_number }}
                         </div>
-                        <div class="text-muted">дата регистрации:
-                            <input type="date" name="passport_data" value="{{ $client->passport_data }}"
-                                   class="form form-control col-6">
+                        <div>дата регистрации:
+{{--                            <input type="date" name="passport_data" value="{{ $client->passport_data }}"--}}
+{{--                                   class="form form-control col-6">--}}
+                            {{ $client->passport_data }}
                         </div>
                     </td>
                     <td>

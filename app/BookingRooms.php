@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
 
@@ -13,7 +14,12 @@ class BookingRooms extends Model
 {
     protected $guarded = [];
 
-    public static function bookingRoom($request, $id)
+    /**
+     * @param $request
+     * @param $id
+     * @return int
+     */
+    public static function bookingRoom($request, $id): int
     {
         $bookingRooms = new BookingRooms([
             'client_id' => $id,
@@ -27,29 +33,39 @@ class BookingRooms extends Model
             'new' => $request->new,
             'price' => $request->price,
             'discount' => $request->discount,
-            'accommodation' => $request->accommodation == 'on',
-            'payment_type' => $request->accommodation == 'on',
-            'payment_state' => $request->accommodation == 'on',
+            'type_of_day' => $request->type_of_day,
+            'booking_type' => $request->booking_type,
+            'payment_type' => $request->payment_type,
+            'payment_state' => $request->payment_state,
         ]);
 
         $bookingRooms->save();
+
+        return $bookingRooms->id;
     }
 
     /**
-     * @param $id
+     * @param $roomId
      * @param $start
      * @param $end
+     * @param $bookingId
      * @return bool
      */
-    public static function isContainsPeriod($id, $start, $end): bool
+    public static function isContainsPeriod($roomId, $start, $end, $bookingId = false): bool
     {
-        $room = BookingRooms::where('room_id', '=', $id)->get();
+        if ($bookingId) {
+            $room = BookingRooms::where('room_id', '=', $roomId)->where('id', '!=', $bookingId)->get();
+        } else {
+            $room = BookingRooms::where('room_id', '=', $roomId)->get();
+        }
+
         if (count($room) > 0) {
             foreach ($room as $booking) {
                 $period = CarbonPeriod::create(
                     $booking->date_start . ' ' . $booking->time_start,
                     $booking->date_end . ' ' . $booking->time_end
                 );
+
                 if ($period->contains($start) || $period->contains($end)) {
                     return true;
                 } else {
@@ -111,5 +127,13 @@ class BookingRooms extends Model
     public function tariff(): BelongsTo
     {
         return $this->belongsTo(Tariff::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function nutritious(): HasMany
+    {
+        return $this->hasMany(BookingNutrition::class, 'booking_id');
     }
 }

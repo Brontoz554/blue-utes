@@ -2,10 +2,10 @@
 @section('title', 'Тарифы')
 @section('content')
 
-    <div class="container p-0 pt-5">
-        <a href="{{ route('create.tariff.view') }}" class="btn btn-default col-3">
-            Добавить тариф
-        </a>
+    <a href="{{ route('create.tariff.view') }}" class="btn btn-secondary mb-3">
+        Добавить тариф
+    </a>
+    <div class="p-0">
         <h3 class="p-2">Тарифы</h3>
         <table id="rooms" class="table table-bordered table-striped dataTable dtr-inline">
             <thead>
@@ -17,6 +17,7 @@
                 <th>Лечение</th>
                 <th>Питание</th>
                 <th>Доп.услуги</th>
+                <th>Тип тарифа</th>
                 <th></th>
             </tr>
             </thead>
@@ -59,8 +60,21 @@
                         @endif
                     </td>
                     <td>
-                        <a class="btn btn-default" href="{{ route('destroy.tariff', $obj->id) }}">Удалить</a>
-                        <a class="btn btn-default" href="{{ route('edit.tariff.view', $obj->id) }}">Редактировать</a>
+                        @if($obj->prepayment)
+                            <div>Предоплата: <b>{{ $obj->prepayment }}</b></div>
+                        @endif
+                        @if($obj->hour)
+                            <div>Бесплатная отмена за <b>{{ $obj->hour }}</b> часа(ов) до заезда</div>
+                        @endif
+                        @if($obj->fine)
+                            <div>штраф за позднюю отмену: <b>{{ $obj->fine }}</b></div>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column">
+                            <a class="btn btn-default" href="{{ route('destroy.tariff', $obj->id) }}">Удалить</a>
+                            <a class="btn btn-default" href="{{ route('edit.tariff.view', $obj->id) }}">Редактировать</a>
+                        </div>
                     </td>
                 </tr>
             @endforeach

@@ -194,7 +194,7 @@
 {{--                                    </li>--}}
                                     <li class="nav-item">
                                         <a href="{{ route('booking.board') }}" class="nav-link">
-                                            <p>Шахматка</p>
+                                            <p>Бронирования</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">

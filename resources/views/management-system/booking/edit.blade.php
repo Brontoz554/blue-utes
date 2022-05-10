@@ -2,12 +2,28 @@
 @section("title", "Редактировать бронирование")
 @section("content")
 
-    {!! Form::open(["action" =>"BookingController@booking", "method" => "POST", "class" => "container card p-4"])!!}
+    {!! Form::open(["action" =>"BookingController@editBooking", "method" => "POST", "class" => "container card p-4"])!!}
+    @if(Session::has('room'))
+        <p class="alert-danger p-2">{{ Session::get('room') }}</p>
+    @endif
+
+    @if(Session::has('success'))
+        <p class="alert-success p-2">{{ Session::get('success') }}</p>
+    @endif
     <h3>Редактировать бронирование</h3>
-    <ol>
-        <li>Имя клиента {{ $booking->client->name }}</li>
-        <li>Дата заселения {{ $booking->date_start }}</li>
-    </ol>
+
+    <input type="hidden" name="bookingId" value="{{ $booking->id }}">
+    <div>
+        <b>Имя: </b> {{ $booking->client->name }}
+    </div>
+
+    <div>
+        <b>Почтовый адрес: </b> {{ $booking->client->mail }}
+    </div>
+
+    <div>
+        <b>Номер телефона: </b> {{ $booking->client->number }}
+    </div>
 
     <div class="d-flex align-items-baseline mb-3">
         <div class="w-25">
@@ -92,18 +108,15 @@
                 @enderror
             </div>
         </div>
-        <div class="form-group required col-6">
-            <label for="accommodation">Проживание входит в стоимость тарифа?</label>
-            <input type="checkbox" name="accommodation" id="accommodation" class="form form-check" checked>
-        </div>
     </div>
 
     <div class='form-group required w-25'>
         <label for="type_of_day">Тип суток</label>
-        <select name="type_of_day" id="type_of_day" class="form form-select">
-            <option value="Санаторный">Санаторный</option>
-            <option value="Отельный">Отельный</option>
-        </select>
+        {!! Form::select('type_of_day', array_unique([
+            $booking->type_of_day => $booking->type_of_day,
+            'Санаторный' => 'Санаторный',
+            'Отельный' => 'Отельный',
+        ]), null, ['class' => 'custom-select rounded-0']) !!}
     </div>
 
     <div class="d-flex w-50">
@@ -124,107 +137,110 @@
     </div>
 
     <div class="form-group required pl-0 w-50">
-        <label for="type">Кто бронирует</label>
-        <select name="type" id="type" class="form-select">
-            <option value="1">Гость бронирует для себя</option>
-            <option value="2">Контактное лицо бронирует для гостя</option>
-            <option value="3">Бронирует контрагент</option>
-        </select>
+        <label for="booking_type">Кто бронирует</label>
+        {!! Form::select('booking_type', array_unique([
+            $booking->booking_type => $booking->booking_type,
+            'Гость бронирует для себя' => 'Гость бронирует для себя',
+            'Контактное лицо бронирует для гостя' => 'Контактное лицо бронирует для гостя',
+            'Бронирует контрагент' => 'Бронирует контрагент',
+        ]), null, ['class' => 'custom-select rounded-0']) !!}
     </div>
 
     <div class="d-flex w-75">
         <div class="form-group required w-50">
             <label for="payment_type">Тип оплаты</label>
-            <select name="payment_type" id="payment_type" class="form form-select">
-                <option value="Наличными(при заселении)">Наличными(при заселении)</option>
-                <option value="Картой (при заселении)">Картой (при заселении)</option>
-                <option value="Перевод">Перевод</option>
-            </select>
+            {!! Form::select('payment_type', array_unique([
+                $booking->payment_type => $booking->payment_type,
+                'Наличными(при заселении)' => 'Наличными(при заселении)',
+                'Картой (при заселении)' => 'Картой (при заселении)',
+                'Перевод' => 'Перевод',
+            ]), null, ['class' => 'custom-select rounded-0']) !!}
             @error("payment_type")
             <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
         <div class="form-group required w-50">
             <label for="payment_state">Статус оплаты</label>
-            <select name="payment_state" id="payment_type" class="form form-select">
-                <option value="Оплачено">Оплачено</option>
-                <option value="Не оплачено">Не оплачено</option>
-            </select>
+            {!! Form::select('payment_state', array_unique([
+                $booking->payment_state => $booking->payment_state,
+                'Оплачено' => 'Оплачено',
+                'Не оплачено' => 'Не оплачено',
+            ]), null, ['class' => 'custom-select rounded-0']) !!}
             @error("discount")
             <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
     </div>
 
-    <fieldset class="bg-light p-4 mt-2 mb-2">
-        <legend>Данные клиента</legend>
-        <select name="client_type" id="clientType" class="form form-select mb-2">
-            <option value="newClient">Новый клиент</option>
-            <option value="oldClient">Клиент уже посещял санаторий</option>
-        </select>
-        <div id="newClient">
-            <div class="d-flex">
-                <div class="col-4 pl-0">
-                    <label for="subject">Имя гостя</label>
-                    {{ Form::text("name", $booking->client->name, ["class" => "form form-control"]) }}
-                    @error("name")
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
+    {{--    <fieldset class="bg-light p-4 mt-2 mb-2">--}}
+    {{--        <legend>Данные клиента</legend>--}}
+    {{--        <select name="client_type" id="client_type" class="form form-select mb-2">--}}
+    {{--            <option value="newClient">Новый клиент</option>--}}
+    {{--            <option value="oldClient">Клиент уже посещял санаторий</option>--}}
+    {{--        </select>--}}
+    {{--        <div id="newClient">--}}
+    {{--            <div class="d-flex">--}}
+    {{--                <div class="col-4 pl-0">--}}
+    {{--                    <label for="subject">Имя гостя</label>--}}
+    {{--                    {{ Form::text("name", $booking->client->name, ["class" => "form form-control"]) }}--}}
+    {{--                    @error("name")--}}
+    {{--                    <div class="text-danger">{{ $message }}</div>--}}
+    {{--                    @enderror--}}
+    {{--                </div>--}}
 
-                <div class="col-4">
-                    <label for="number">Номер телефона</label>
-                    {{ Form::text("number", $booking->client->number, ["class" => "form form-control", 'id' => 'number']) }}
-                    @error("number")
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
+    {{--                <div class="col-4">--}}
+    {{--                    <label for="number">Номер телефона</label>--}}
+    {{--                    {{ Form::text("number", $booking->client->number, ["class" => "form form-control", 'id' => 'number']) }}--}}
+    {{--                    @error("number")--}}
+    {{--                    <div class="text-danger">{{ $message }}</div>--}}
+    {{--                    @enderror--}}
+    {{--                </div>--}}
 
-                <div class="col-4 pr-0">
-                    <label for="mail">Почта</label>
-                    {{ Form::email("mail", $booking->client->mail, ["class" => "form form-control", 'id' => 'mail']) }}
-                    @error("mail")
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
-            <div class="d-flex">
-                <div class="col-4 pl-0">
-                    <label for="subject">Серия паспорта</label>
-                    {{ Form::text("serial", $booking->client->serial, ["class" => "form form-control", 'id' => 'serial']) }}
-                    @error("serial")
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
+    {{--                <div class="col-4 pr-0">--}}
+    {{--                    <label for="mail">Почта</label>--}}
+    {{--                    {{ Form::email("mail", $booking->client->mail, ["class" => "form form-control", 'id' => 'mail']) }}--}}
+    {{--                    @error("mail")--}}
+    {{--                    <div class="text-danger">{{ $message }}</div>--}}
+    {{--                    @enderror--}}
+    {{--                </div>--}}
+    {{--            </div>--}}
+    {{--            <div class="d-flex">--}}
+    {{--                <div class="col-4 pl-0">--}}
+    {{--                    <label for="subject">Серия паспорта</label>--}}
+    {{--                    {{ Form::text("serial", $booking->client->serial, ["class" => "form form-control", 'id' => 'serial']) }}--}}
+    {{--                    @error("serial")--}}
+    {{--                    <div class="text-danger">{{ $message }}</div>--}}
+    {{--                    @enderror--}}
+    {{--                </div>--}}
 
-                <div class="col-4">
-                    <label for="subject">Номер паспорта</label>
-                    {{ Form::text("passport_number", $booking->client->passport_number, ["class" => "form form-control", 'id' => 'passport_number']) }}
-                    @error("passport_number")
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
+    {{--                <div class="col-4">--}}
+    {{--                    <label for="subject">Номер паспорта</label>--}}
+    {{--                    {{ Form::text("passport_number", $booking->client->passport_number, ["class" => "form form-control", 'id' => 'passport_number']) }}--}}
+    {{--                    @error("passport_number")--}}
+    {{--                    <div class="text-danger">{{ $message }}</div>--}}
+    {{--                    @enderror--}}
+    {{--                </div>--}}
 
-                <div class="col-4 pr-0">
-                    <label for="subject">Дата выдачи</label>
-                    {{ Form::date("passport_data", $booking->client->passport_data, ["class" => "form form-control", 'id' => 'passport_date']) }}
-                    @error("passport_data")
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
-        </div>
-        <div id="oldClient" style="display:none;">
-            <select name="oldClient" class="form form-select">
-                @foreach($clients as $client)
-                    <option value="{{ $client->number }}">
-                        {{ $client->name }}
-                        {{ $client->number }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </fieldset>
+    {{--                <div class="col-4 pr-0">--}}
+    {{--                    <label for="subject">Дата выдачи</label>--}}
+    {{--                    {{ Form::date("passport_data", $booking->client->passport_data, ["class" => "form form-control", 'id' => 'passport_date']) }}--}}
+    {{--                    @error("passport_data")--}}
+    {{--                    <div class="text-danger">{{ $message }}</div>--}}
+    {{--                    @enderror--}}
+    {{--                </div>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--        <div id="oldClient" style="display:none;">--}}
+    {{--            <select name="oldClient" class="form form-select">--}}
+    {{--                @foreach($clients as $client)--}}
+    {{--                    <option value="{{ $client->number }}">--}}
+    {{--                        {{ $client->name }}--}}
+    {{--                        {{ $client->number }}--}}
+    {{--                    </option>--}}
+    {{--                @endforeach--}}
+    {{--            </select>--}}
+    {{--        </div>--}}
+    {{--    </fieldset>--}}
 
     <div class="form-group required mt-2">
         <label>Комментарий</label>
@@ -243,22 +259,58 @@
         });
     </script>
     <script>
-        $('#clientType').change(function () {
+        getRoom();
+        getTariff();
+        checkBooking();
+
+        $('#client_type').change(function () {
             if ($(this).val() === 'newClient') {
+                $('#guest_name').prop('required', true);
+                $('#number').prop('required', true);
+                $('#email').prop('required', true);
+                $('#serial').prop('required', true);
+                $('#passport_number').prop('required', true);
+                $('#passport_date').prop('required', true);
                 $('#newClient').show()
                 $('#oldClient').hide()
             } else {
                 $('#newClient').hide()
                 $('#oldClient').show()
+                $('#guest_name').prop('required', false);
+                $('#number').prop('required', false);
+                $('#email').prop('required', false);
+                $('#serial').prop('required', false);
+                $('#passport_number').prop('required', false);
+                $('#passport_date').prop('required', false);
             }
         })
-        getRoom();
-        getTariff();
-        checkBooking();
 
         $('#tariff').on('change', async function () {
             await getTariff();
             calculateTotalPrice();
+
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "{{ route('getTariffRoomInfo') }}",
+                data: {
+                    id: $('#tariff').val()
+                },
+
+                success: function (response) {
+                    $('.room-render').hide()
+                    $.each(response.tariff, function (key, val) {
+                        $.each($('.room-render'), function () {
+                            if ($(this).attr('data-target') === val.name) {
+                                $(this).show()
+                            }
+                        })
+                    })
+
+                    $('.rooms-select').removeAttr('disabled')
+                    $('.rooms-select').val('не выбрано')
+                },
+            });
         });
 
         $('#room').on('change', async function () {
@@ -292,14 +344,6 @@
             checkBooking();
         });
 
-        $('#accommodation').click(function () {
-            if ($(this).is(':checked')) {
-                calculateTotalPrice()
-            } else {
-                calculateTotalPrice(true)
-            }
-        });
-
         $('#discount').change(function () {
             let newPrice = Number($('#price').val()) - Number($("#discount").val())
             $('#price').val(newPrice)
@@ -315,8 +359,48 @@
                 },
 
                 success: function (response) {
-                    sessionStorage.setItem('tariff', response.tariff[0].price);
-                    console.log(response)
+                    sessionStorage.setItem('tariff', response.tariff.price);
+                    $('.render').remove()
+                    $('.nutrition-type').val(0)
+                    $('.breakfast').hide()
+                    $('.dinner').hide()
+                    $('.lunch').hide()
+                    $('.tariff-information').show()
+
+                    if (response.tariff.treatment === 'on') {
+                        $.each(response.tariff.treatments, function (key, value) {
+                            $('.tariff-treatment').append(
+                                "<div class='render'>" + value.name + "</div>"
+                            )
+                        });
+                    }
+
+                    if (response.tariff.nutrition === 'on') {
+                        $.each(response.tariff.eatings, function (key, value) {
+                            if (value.name === 'завтрак') {
+                                $('.breakfast').show()
+                            }
+                            if (value.name === 'обед') {
+                                $('.dinner').show()
+                            }
+                            if (value.name === 'ужин') {
+                                $('.lunch').show()
+                            }
+                        });
+                    }
+
+
+                    if (response.tariff.another === 'on') {
+                        $.each(response.tariff.services, function (key, value) {
+                            $('.tariff-services').append(
+                                "<div class='render'>" + value.name + "</div>"
+                            )
+                        });
+                    }
+
+                    $('.tariff-name').html(response.tariff.name)
+                    $('.tariff-price').html(response.tariff.price)
+
                 },
             });
         }
@@ -332,10 +416,12 @@
 
                 success: function (response) {
                     sessionStorage.setItem('roomPrice', response.room[0].price);
-                    $('#old').val(1)
-                    $('#new').val(1)
                     $('#old').attr("max", response.room[0].space)
-                    $('#new').attr("max", response.room[0].space - 2)
+                    if ((response.room[0].space - 2) > 0) {
+                        $('#new').attr("max", response.room[0].space - 2)
+                    } else {
+                        $('#new').attr("max", response.room[0].space)
+                    }
                 },
             });
         }

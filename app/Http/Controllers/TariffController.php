@@ -15,7 +15,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -57,12 +59,17 @@ class TariffController extends Controller
             $tariff = new Tariff([
                 'name' => $request->input('name'),
                 'price' => $request->input('price'),
-                'treatment' => $request->input('treatment'),
-                'nutrition' => $request->input('nutrition'),
-                'another' => $request->input('another'),
+                'treatment' => isset($request->treatment) ? 'on' : 'off',
+                'nutrition' => isset($request->nutrition) ? 'on' : 'off',
+                'another' => isset($request->another) ? 'on' : 'off',
                 'type_of_day' => $request->input('typeOfDay'),
+                'irrevocable' => $request->input('irrevocable'),
+                'prepayment' => $request->input('prepayment'),
+                'hour' => $request->input('hour'),
+                'fine' => $request->input('fine'),
             ]);
             $tariff->save();
+
 
             $idTypes = explode(',', $request->input('roomTypeId'));
             if (in_array('all', $idTypes)) {
@@ -91,6 +98,7 @@ class TariffController extends Controller
             }
         });
 
+        Session::flash('success', 'Тариф ' . $request->name . ' создан');
         return Redirect::refresh();
     }
 
@@ -152,6 +160,10 @@ class TariffController extends Controller
                 'treatment' => isset($request->treatment) ? 'on' : 'off',
                 'nutrition' => isset($request->nutrition) ? 'on' : 'off',
                 'another' => isset($request->another) ? 'on' : 'off',
+                'irrevocable' => $request->input('irrevocable'),
+                'prepayment' => $request->input('prepayment'),
+                'hour' => $request->input('hour'),
+                'fine' => $request->input('fine'),
             ]);
 
             $idTypes = explode(',', $request->input('roomTypeId'));
@@ -160,7 +172,7 @@ class TariffController extends Controller
             } else {
                 $types = RoomTypes::find($idTypes);
             }
-            $test = TariffRooms::where('tariff_id', '=', $tariff->id)->delete();
+            TariffRooms::where('tariff_id', '=', $tariff->id)->delete();
             $tariff->roomTypes()->attach($types);
 
             if ($request->input('treatment') == 'on') {
@@ -197,8 +209,13 @@ class TariffController extends Controller
      */
     public function getTariffInfo(Request $request): JsonResponse
     {
+        $tariff = Tariff::where('id', '=', $request->id)->first();
+        $tariff['treatments'] = $tariff->treatments;
+        $tariff['services'] = $tariff->services;
+        $tariff['eatings'] = $tariff->eatings;
+
         return response()->json(
-            ['tariff' => Tariff::where('id', '=', $request->id)->get()]
+            ['tariff' => $tariff]
         );
     }
 

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\BookingNutrition;
 use App\BookingRooms;
 use App\Client;
 use App\Rooms;
 use App\RoomTypes;
 use App\Tariff;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -14,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class BookingController extends Controller
@@ -27,19 +28,20 @@ class BookingController extends Controller
         $roomTypes = RoomTypes::get();
         $json = [];
         foreach ($roomTypes as $roomType) {
-            $json[$roomType->name]['rooms'] = collect($roomType->rooms);
+            $json[$roomType->name]['rooms'] = collect($roomType->rooms)->toArray();
             foreach ($roomType->rooms as $room) {
-                $json[$roomType->name]['rooms']['bookings'] = collect($room->bookings);
+                $json[$roomType->name]['rooms']['bookings'] = collect($room->bookings)->toArray();
                 foreach ($room->bookings as $booking) {
-                    $json[$roomType->name]['rooms']['client'] = collect($booking->client);
-                    $json[$roomType->name]['rooms']['tariff'] = collect($booking->tariff);
-                    $json[$roomType->name]['rooms']['tariff']['treatments'] = collect($booking->tariff->treatments);
-                    $json[$roomType->name]['rooms']['tariff']['eatings'] = collect($booking->tariff->eatings);
-                    $json[$roomType->name]['rooms']['tariff']['services'] = collect($booking->tariff->services);
+                    $json[$roomType->name][$booking->id]['room']['client'] = collect($booking->client)->toArray();
+                    $json[$roomType->name][$booking->id]['room']['tariff'] = collect($booking->tariff)->toArray();
+                    $json[$roomType->name][$booking->id]['room']['tariff']['treatments'] = collect($booking->tariff->treatments)->toArray();
+                    $json[$roomType->name][$booking->id]['room']['tariff']['eatings'] = collect($booking->tariff->eatings)->toArray();
+                    $json[$roomType->name][$booking->id]['room']['tariff']['services'] = collect($booking->tariff->services)->toArray();
                 }
             }
         }
 
+        dd($json);
         return view('management-system.booking.index', ['roomTypes' => $roomTypes, 'json' => collect($json)->toJson()]);
     }
 
@@ -58,11 +60,10 @@ class BookingController extends Controller
     /**
      * @param Request $request
      * @return RedirectResponse
-     * @throws ValidationException
      */
     public function booking(Request $request): RedirectResponse
     {
-        self::validateRequest($request);
+        BookingController::validateRequest($request);
 
         if (BookingRooms::isContainsPeriod($request->room,
             $request->date_start . ' ' . $request->time_start,
@@ -79,10 +80,12 @@ class BookingController extends Controller
                     $client = Client::where('number', '=', $request->oldClient)->first();
                     $client->increment('number_of_sessions');
                 }
-                BookingRooms::bookingRoom($request, $client->id);
+                $id = BookingRooms::bookingRoom($request, $client->id);
+                BookingNutrition::createNutritionInfo($request, $id);
             });
         }
 
+        Session::flash('success', 'Успешно забронировано');
         return Redirect::refresh();
     }
 
@@ -180,7 +183,7 @@ class BookingController extends Controller
      * @param BookingRooms $booking
      * @return View
      */
-    public function editBooking(BookingRooms $booking): View
+    public function editBookingView(BookingRooms $booking): View
     {
         $tariff = Tariff::get();
         $rooms = Rooms::get();
@@ -192,6 +195,59 @@ class BookingController extends Controller
             'rooms' => $rooms,
             'clients' => $clients,
         ]);
+    }
+
+    /**
+     * @param BookingRooms $booking
+     * @return View
+     */
+    public function editNutritionBooking(BookingRooms $booking): View
+    {
+        $from = Carbon::parse($booking->date_start . ' ' . $booking->time_start);
+        $to = Carbon::parse($booking->date_end . ' ' . $booking->time_end);
+        $days = $to->diffInDays($from) + 1;
+
+        return view('management-system.booking.edit-nutrition', ['booking' => $booking, 'days' => $days]);
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function editBooking(Request $request): RedirectResponse
+    {
+        $contains = BookingRooms::isContainsPeriod(
+            $request->room,
+            $request->date_start . ' ' . $request->time_start,
+            $request->date_end . ' ' . $request->time_end,
+            $request->bookingId
+        );
+
+        if ($contains) {
+            Session::flash('room', 'Номер занят');
+
+            return Redirect::back()->withInput();
+        }
+
+        BookingRooms::where('id', '=', $request->bookingId)->update([
+            'date_start' => $request->date_start,
+            'time_start' => $request->time_start,
+            'date_end' => $request->date_end,
+            'time_end' => $request->time_end,
+            'old' => $request->old,
+            'new' => $request->new,
+            'price' => $request->price,
+            'discount' => $request->discount,
+            'booking_type' => $request->booking_type,
+            'payment_type' => $request->payment_type,
+            'payment_state' => $request->payment_state,
+            'type_of_day' => $request->type_of_day,
+            'room_id' => $request->room,
+            'tariff_id' => $request->tariff,
+        ]);
+
+        Session::flash('success', 'Информация о бронировании изменена');
+        return Redirect::route('booking');
     }
 
     /**
@@ -217,6 +273,8 @@ class BookingController extends Controller
             'passport_number.required' => 'Номер паспорта обязателен',
             'passport_data.required' => 'Дата выдачи паспорта обязательна',
             'oldClient.required' => 'Это поле обязательно',
+            'tariff.required' => 'Выберите тариф',
+            'room.required' => 'Выбирете комнату',
         ];
 
         if ($request->client_type == 'newClient') {
@@ -233,6 +291,8 @@ class BookingController extends Controller
                 'passport_data' => 'required',
                 'passport_number' => 'required',
                 'serial' => 'required',
+                'room' => 'required',
+                'tariff' => 'required',
             ], $messages);
         } else {
             $request->validate([

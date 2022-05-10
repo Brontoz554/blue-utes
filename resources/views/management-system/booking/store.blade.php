@@ -1,8 +1,16 @@
 @extends("layouts.adminLayout")
 @section("title", "Бронирование")
 @section("content")
+    <style>
+        table > tbody > tr > td > div > label {
+            font-weight: normal !important;
+        }
+    </style>
 
     {!! Form::open(["action" =>"BookingController@booking", "method" => "POST", "class" => "container card p-4"])!!}
+    @if(Session::has('success'))
+        <p class="alert-success p-2">{{ Session::get('success') }}</p>
+    @endif
     <h3>Бронирование</h3>
 
     <div class="d-flex align-items-baseline mb-3">
@@ -42,7 +50,7 @@
     <div class="d-flex">
         <div class="form-group required w-50">
             <label for="room">Номер комнаты</label>
-            <select name="room" id="room" class="form-select col-12 rooms-select" disabled>
+            <select name="room" id="room" class="form-select col-12 rooms-select" disabled required>
                 <option value="не выбрано" selected>Не выбрано</option>
                 @foreach($rooms as $room)
                     <option class="room-render" value="{{ $room->id }}" data-target="{{ $room->type->name }}">
@@ -60,9 +68,9 @@
             @enderror
         </div>
         <div class="form-group required w-50 ml-3">
-            <label for="subject">Тариф</label>
-            <select name="tariff" id="tariff" class="form-select col-12">
-                <option value="не выбрано" selected>Не выбрано</option>
+            <label for="tariff">Тариф</label>
+            <select name="tariff" id="tariff" class="form-select col-12" required>
+                <option value="не выбрано" selected disabled>Не выбрано</option>
                 @foreach($tariff as $item)
                     <option class="tariff-item" value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
@@ -90,10 +98,6 @@
                 @enderror
             </div>
         </div>
-        {{--        <div class="form-group required col-6">--}}
-        {{--            <label for="accommodation">Проживание входит в стоимость тарифа?</label>--}}
-        {{--            <input type="checkbox" name="accommodation" id="accommodation" class="form form-check" checked>--}}
-        {{--        </div>--}}
 
         <div class='form-group required col-6'>
             <label for="type_of_day">Тип суток</label>
@@ -104,20 +108,22 @@
         </div>
     </div>
 
-    <div class="d-flex w-50">
-        <div class="form-group required w-50">
-            <label for="subject">Общая стоимость</label>
-            {{ Form::number("price", null, ["class" => "form form-control", "min" => 0, "id" => 'price']) }}
-            @error("price")
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-        <div class="form-group required w-50">
-            <label for="subject">Скидка в рублях</label>
-            {{ Form::number("discount", null, ["class" => "form form-control", "id" => "discount" ]) }}
-            @error("discount")
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
+    <div class="d-flex flex-row">
+        <div class="w-50 d-flex">
+            <div class="form-group required w-50">
+                <label for="subject">Общая стоимость</label>
+                {{ Form::number("price", null, ["class" => "form form-control", "min" => 0, "id" => 'price']) }}
+                @error("price")
+                <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="form-group required w-50">
+                <label for="subject">Скидка в рублях</label>
+                {{ Form::number("discount", null, ["class" => "form form-control", "id" => "discount"]) }}
+                @error("discount")
+                <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
     </div>
 
@@ -136,8 +142,8 @@
         <div class="form-group required">
             <label for="payment_state">Статус оплаты</label>
             <select name="payment_state" id="payment_type" class="form form-select">
-                <option value="Оплачено">Оплачено</option>
                 <option value="Не оплачено">Не оплачено</option>
+                <option value="Оплачено">Оплачено</option>
             </select>
             @error("discount")
             <div class="text-danger">{{ $message }}</div>
@@ -146,16 +152,16 @@
     </div>
 
     <div class="form-group required pl-0 w-50">
-        <label for="type">Кто бронирует</label>
-        <select name="type" id="type" class="form-select">
-            <option value="1">Гость бронирует для себя</option>
-            <option value="2">Контактное лицо бронирует для гостя</option>
-            <option value="3">Бронирует контрагент</option>
+        <label for="booking_type">Кто бронирует</label>
+        <select name="booking_type" id="booking_type" class="form-select">
+            <option value="Гость бронирует для себя">Гость бронирует для себя</option>
+            <option value="Контактное лицо бронирует для гостя">Контактное лицо бронирует для гостя</option>
+            <option value="Бронирует контрагент">Бронирует контрагент</option>
         </select>
     </div>
 
     <fieldset class="bg-light p-4 mt-2 mb-2">
-        <legend>Данные клиента</legend>
+        <label for="clientType">Данные клиента</label>
         <select name="client_type" id="clientType" class="form form-select mb-2">
             <option value="newClient">Новый клиент</option>
             <option value="oldClient">Клиент уже посещял санаторий</option>
@@ -164,7 +170,7 @@
             <div class="d-flex">
                 <div class="col-4 pl-0">
                     <label for="name">Имя гостя</label>
-                    {{ Form::text("name", null, ["class" => "form form-control"]) }}
+                    {{ Form::text("name", null, ["class" => "form form-control", "id"=> "guest_name"]) }}
                     @error("name")
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -224,6 +230,46 @@
         </div>
     </fieldset>
 
+    <div class="tariff-information" style="display: none">
+        <div class="mt-2 mb-2">
+            <b>Название тарифа:</b> <span class="tariff-name">Тариф не выбран</span>
+        </div>
+        <div class="mt-2 mb-2">
+            <b>Цена за сутки:</b> <span class="tariff-price">0</span>
+        </div>
+        <div class="mt-2 mb-2">
+            <b>Предоставляемые медецинские услуги в рамках тарифа:</b>
+            <div class="tariff-treatment"></div>
+        </div>
+        <div class="mt-2 mb-2">
+            <b>Предоставляемые дополнительные услуги в рамках тарифа:</b>
+            <div class="tariff-services"></div>
+        </div>
+        <div class="tariff-info"></div>
+        <div class="mt-2 mb-2">
+            <b>Предоставляемые услуги питания в рамках тарифа:</b>
+            <p class="text-muted">Количетсво персон, которые будут кушать</p>
+            <div class="tariff-nutrition d-flex">
+                <div style="width: 75px; display: none" class="mr-2 breakfast">
+                    <label for="breakfast">Завтрак</label>
+                    <input class="form form-control nutrition-type" type="number" name="breakfast"
+                           id="breakfast" min="0">
+                </div>
+                <div style="width: 75px; display: none;" class="mr-2 dinner">
+                    <label for="dinner">Обед</label>
+                    <input class="form form-control nutrition-type" type="number" name="dinner"
+                           id="dinner" min="0">
+                </div>
+                <div style="width: 75px; display: none;" class="lunch">
+                    <label for="lunch">Ужин</label>
+                    <input class="form form-control nutrition-type" type="number" name="lunch"
+                           id="lunch" min="0">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <div class="form-group required mt-2">
         <label>Комментарий</label>
         {{ Form::textarea("comment", null, ["class" => "form form-control"]) }}
@@ -241,17 +287,25 @@
         });
     </script>
     <script>
-        // getRoom();
-        // getTariff();
-        // checkBooking();
-
         $('#clientType').change(function () {
             if ($(this).val() === 'newClient') {
+                $('#guest_name').prop('required', true);
+                $('#number').prop('required', true);
+                $('#email').prop('required', true);
+                $('#serial').prop('required', true);
+                $('#passport_number').prop('required', true);
+                $('#passport_date').prop('required', true);
                 $('#newClient').show()
                 $('#oldClient').hide()
             } else {
                 $('#newClient').hide()
                 $('#oldClient').show()
+                $('#guest_name').prop('required', false);
+                $('#number').prop('required', false);
+                $('#email').prop('required', false);
+                $('#serial').prop('required', false);
+                $('#passport_number').prop('required', false);
+                $('#passport_date').prop('required', false);
             }
         })
 
@@ -314,14 +368,6 @@
             checkBooking();
         });
 
-        $('#accommodation').click(function () {
-            if ($(this).is(':checked')) {
-                calculateTotalPrice()
-            } else {
-                calculateTotalPrice(true)
-            }
-        });
-
         $('#discount').change(function () {
             let newPrice = Number($('#price').val()) - Number($("#discount").val())
             $('#price').val(newPrice)
@@ -337,7 +383,48 @@
                 },
 
                 success: function (response) {
-                    sessionStorage.setItem('tariff', response.tariff[0].price);
+                    sessionStorage.setItem('tariff', response.tariff.price);
+                    $('.render').remove()
+                    $('.nutrition-type').val(0)
+                    $('.breakfast').hide()
+                    $('.dinner').hide()
+                    $('.lunch').hide()
+                    $('.tariff-information').show()
+
+                    if (response.tariff.treatment === 'on') {
+                        $.each(response.tariff.treatments, function (key, value) {
+                            $('.tariff-treatment').append(
+                                "<div class='render'>" + value.name + "</div>"
+                            )
+                        });
+                    }
+
+                    if (response.tariff.nutrition === 'on') {
+                        $.each(response.tariff.eatings, function (key, value) {
+                            if (value.name === 'завтрак') {
+                                $('.breakfast').show()
+                            }
+                            if (value.name === 'обед') {
+                                $('.dinner').show()
+                            }
+                            if (value.name === 'ужин') {
+                                $('.lunch').show()
+                            }
+                        });
+                    }
+
+
+                    if (response.tariff.another === 'on') {
+                        $.each(response.tariff.services, function (key, value) {
+                            $('.tariff-services').append(
+                                "<div class='render'>" + value.name + "</div>"
+                            )
+                        });
+                    }
+
+                    $('.tariff-name').html(response.tariff.name)
+                    $('.tariff-price').html(response.tariff.price)
+
                 },
             });
         }
@@ -354,7 +441,11 @@
                 success: function (response) {
                     sessionStorage.setItem('roomPrice', response.room[0].price);
                     $('#old').attr("max", response.room[0].space)
-                    $('#new').attr("max", response.room[0].space - 2)
+                    if ((response.room[0].space - 2) > 0) {
+                        $('#new').attr("max", response.room[0].space - 2)
+                    } else {
+                        $('#new').attr("max", response.room[0].space)
+                    }
                 },
             });
         }
@@ -376,7 +467,7 @@
             });
         }
 
-        function calculateTotalPrice(withRoom = false) {
+        function calculateTotalPrice() {
             let oneDay = 1000 * 60 * 60 * 24;
             let start = new Date($('#date_start').val())
             let end = new Date($('#date_end').val())
@@ -388,9 +479,6 @@
             let totalDays = days / oneDay;
 
             let price = sessionStorage.getItem('tariff');
-            if (withRoom) {
-                price = Number(price) + Number(sessionStorage.getItem('roomPrice'));
-            }
 
             if ($('#type_of_day').val() == 'Санаторный') {
                 totalDays++
