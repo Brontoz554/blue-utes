@@ -28,17 +28,16 @@ class BookingController extends Controller
         $roomTypes = RoomTypes::get();
         $json = [];
         foreach ($roomTypes as $roomType) {
-            $json[$roomType->name]['rooms'] = collect($roomType->rooms)->toArray();
             foreach ($roomType->rooms as $room) {
-                $json[$roomType->name]['rooms']['bookings'] = collect($room->bookings)->toArray();
+                $json[$roomType->name][$room->number] = collect($room)->toArray();
                 foreach ($room->bookings as $booking) {
-                    $json[$roomType->name][$booking->id]['room']['client'] = collect($booking->client)->toArray();
-                    $json[$roomType->name][$booking->id]['room']['tariff'] = collect($booking->tariff)->toArray();
-                    $json[$roomType->name][$booking->id]['room']['tariff']['treatments'] = collect($booking->tariff->treatments)->toArray();
-                    $json[$roomType->name][$booking->id]['room']['tariff']['eatings'] = collect($booking->tariff->eatings)->toArray();
-                    $json[$roomType->name][$booking->id]['room']['tariff']['services'] = collect($booking->tariff->services)->toArray();
+                    $json[$roomType->name][$room->number][$booking->id]['booking'] = collect($booking)->toArray();
+                    $json[$roomType->name][$room->number][$booking->id]['client'] = collect($booking->client)->toArray();
+                    $json[$roomType->name][$room->number][$booking->id]['tariff'] = collect($booking->tariff)->toArray();
+                    $json[$roomType->name][$room->number][$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
                 }
             }
+//            $json[$roomType->name]['rooms'] = collect($roomType->rooms)->toArray();
         }
 
         $data = [
@@ -47,7 +46,7 @@ class BookingController extends Controller
             ['id' => 3, 'name' => 'Truecoder'],
         ];
 
-        return view('management-system.booking.index', ['roomTypes' => $roomTypes, 'json' => collect($json)->toJson(), 'data' => $data]);
+        return view('management-system.booking.index', ['roomTypes' => $roomTypes, 'json' => $json, 'data' => $data]);
     }
 
     /**
