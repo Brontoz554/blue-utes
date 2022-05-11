@@ -26,6 +26,7 @@ class BookingController extends Controller
     public function index(): View
     {
         $roomTypes = RoomTypes::get();
+
         return view('management-system.booking.index', ['roomTypes' => $roomTypes]);
     }
 
@@ -49,10 +50,10 @@ class BookingController extends Controller
             foreach ($roomType->rooms as $room) {
                 $json[$roomType->name][$room->number] = collect($room)->toArray();
                 foreach ($room->bookings as $booking) {
-                    $json[$roomType->name][$room->number][$booking->id]['booking'] = collect($booking)->toArray();
-                    $json[$roomType->name][$room->number][$booking->id]['client'] = collect($booking->client)->toArray();
-                    $json[$roomType->name][$room->number][$booking->id]['tariff'] = collect($booking->tariff)->toArray();
-                    $json[$roomType->name][$room->number][$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
+                    $json[$roomType->name][$room->number]['items'][$booking->id]['booking'] = collect($booking)->toArray();
+                    $json[$roomType->name][$room->number]['items'][$booking->id]['client'] = collect($booking->client)->toArray();
+                    $json[$roomType->name][$room->number]['items'][$booking->id]['tariff'] = collect($booking->tariff)->toArray();
+                    $json[$roomType->name][$room->number]['items'][$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
                 }
             }
         }
