@@ -10,6 +10,7 @@ use App\Rooms;
 use App\RoomTypes;
 use App\Tariff;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -40,9 +41,10 @@ class BookingController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getBookings(): JsonResponse
+    public function getBookings(Request $request): JsonResponse
     {
         $roomTypes = RoomTypes::get();
 
@@ -51,10 +53,13 @@ class BookingController extends Controller
             foreach ($roomType->rooms as $room) {
                 $json[$roomType->name][$room->number] = collect($room)->toArray();
                 foreach ($room->bookings as $booking) {
-                    $json[$roomType->name][$room->number]['items'][$booking->id]['booking'] = collect($booking)->toArray();
-                    $json[$roomType->name][$room->number]['items'][$booking->id]['client'] = collect($booking->client)->toArray();
-                    $json[$roomType->name][$room->number]['items'][$booking->id]['tariff'] = collect($booking->tariff)->toArray();
-                    $json[$roomType->name][$room->number]['items'][$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
+                    $period = CarbonPeriod::create($booking->date_start, $booking->date_end);
+                    if ($period->contains($request->date_start) || $period->contains($request->date_end)) {
+                        $json[$roomType->name][$room->number]['items'][$booking->id]['booking'] = collect($booking)->toArray();
+                        $json[$roomType->name][$room->number]['items'][$booking->id]['client'] = collect($booking->client)->toArray();
+                        $json[$roomType->name][$room->number]['items'][$booking->id]['tariff'] = collect($booking->tariff)->toArray();
+                        $json[$roomType->name][$room->number]['items'][$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
+                    }
                 }
             }
         }

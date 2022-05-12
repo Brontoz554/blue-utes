@@ -107,12 +107,11 @@ Route::get('/reception', 'ReceptionController@index')->name('reception');
 
 Route::get('/kitchen', 'KitchenController@index')->name('kitchen');
 
-// НОВЫЕ МЕТОДЫ ДЛЯ AJAX/FETCH E.T.C
 Route::post('/changeDepartureTime', 'BookingController@changeDepartureTime')->name('changeDepartureTime');
 Route::post('/changeCheckInTime', 'BookingController@changeCheckInTime')->name('changeCheckInTime');
 
 Route::get('/test-booking', 'BookingController@indexView')->name('indexView');
-Route::get('/getBookings', 'BookingController@getBookings')->name('getBookings');
+Route::post('/getBookings', 'BookingController@getBookings')->name('getBookings');
 
 Route::get('/bla', function () {
     $tariff = Tariff::where('id', '=', 20)->first();
