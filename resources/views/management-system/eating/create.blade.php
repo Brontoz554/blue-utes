@@ -81,15 +81,5 @@
                 }
             });
         });
-
-        // $('.text-muted.fa.fa-edit').click(function () {
-        //     let order = $(this).attr('data-order')
-        //     $("input[data-target='" + order + "']").css({
-        //         display: 'inline',
-        //     });
-        //     $("span[data-target='" + order + "']").css({
-        //         display: 'none',
-        //     })
-        // });
     </script>
 @endsection

@@ -218,15 +218,32 @@
                 </div>
             </div>
         </div>
-        <div id="oldClient" style="display:none;">
-            <select name="oldClient" class="form form-select">
+        <div id="oldClient" class="mt-3" style="display:none;">
+            <table id="clients" class="table table-bordered table-striped dataTable dtr-inline">
+                <thead>
+                <tr>
+                    <th class="text-muted">Выбирите нужного</th>
+                    <th>ФИО клиента</th>
+                    <th>Номер телефона</th>
+                    <th>Почтовый ящик</th>
+                    <th>Кол-во посещений</th>
+                </tr>
+                </thead>
+                <tbody>
                 @foreach($clients as $client)
-                    <option value="{{ $client->number }}">
-                        {{ $client->name }}
-                        {{ $client->number }}
-                    </option>
+                    <tr>
+                        <td class="col-1">
+                            <input type="radio" value="{{ $client->id }}" name="oldClient">
+                        </td>
+                        <td> {{ $client->name }} </td>
+                        <td> {{ $client->number }} </td>
+                        <td> {{ $client->mail }} </td>
+                        <td> {{ $client->number_of_sessions }} </td>
+                    </tr>
                 @endforeach
-            </select>
+                </tbody>
+
+            </table>
         </div>
     </fieldset>
 
@@ -284,6 +301,12 @@
             $("#number").mask("+7 (999) 999 99 99");
             $("#serial").mask("9999");
             $("#passport_number").mask("999999");
+
+            $('#clients').DataTable({
+                "order": [[0, "asc"]],
+                "pageLength": 10,
+                "searching": true,
+            });
         });
     </script>
     <script>

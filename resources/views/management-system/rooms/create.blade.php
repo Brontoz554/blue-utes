@@ -23,14 +23,6 @@
     </div>
 
     <div class='form-group required'>
-        <label for="subject">Цена за сутки в ₽</label>
-        {{ Form::text('price', null, ['class' => 'form form-control col-12']) }}
-        @error('price')
-        <div class="text-danger">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <div class='form-group required'>
         <label for="subject">Количество спальных мест</label>
         {{ Form::number('space', null, ['class' => 'form form-control col-12']) }}
         @error('space')

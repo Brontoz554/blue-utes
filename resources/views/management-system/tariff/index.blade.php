@@ -72,7 +72,7 @@
                     </td>
                     <td>
                         <div class="d-flex flex-column">
-                            <a class="btn btn-default" href="{{ route('destroy.tariff', $obj->id) }}">Удалить</a>
+                            <a class="btn btn-default mb-3" href="{{ route('destroy.tariff', $obj->id) }}">Удалить</a>
                             <a class="btn btn-default" href="{{ route('edit.tariff.view', $obj->id) }}">Редактировать</a>
                         </div>
                     </td>

@@ -1,17 +1,16 @@
 @extends('layouts.adminLayout')
 @section('title', 'Номера')
 @section('content')
-    <a href="{{ route('create.room.view') }}" class="btn btn-secondary mb-3">
-        Создать номер
-    </a>
-    <div class="p-0">
+    <div class="container">
+        <a href="{{ route('create.room.view') }}" class="btn btn-secondary mb-3">
+            Создать номер
+        </a>
         <h3 class="p-2">Номера</h3>
         <table id="rooms" class="table table-bordered table-striped dataTable dtr-inline">
             <thead>
             <tr>
                 <th>Тип номера</th>
                 <th>Номер</th>
-                <th>Цена за сутки</th>
                 <th>Количество спальных мест</th>
                 <th>Статус</th>
                 <th>Доп. услуги</th>
@@ -25,9 +24,6 @@
                     <td>{{ $room->type->name }}</td>
                     <td>
                         {{ $room->number }}
-                    </td>
-                    <td>
-                        {{ $room->price }}
                     </td>
                     <td>
                         {{ $room->space }}

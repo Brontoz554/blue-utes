@@ -2,57 +2,55 @@
 @section('title', 'Данные клиентов')
 @section('content')
 
-    <div class="p-0 pt-5">
+    <div>
         <h3 class="p-2">Клиенты</h3>
         <table id="rooms" class="table table-bordered table-striped dataTable dtr-inline">
             <thead>
             <tr>
-                <th class="col-2">Имя</th>
+                <th class="col-3">Имя</th>
                 <th>Номер телефона</th>
-                <th class="col-2">почтовый ящик</th>
+                <th>почтовый ящик</th>
                 <th>Паспортные данные</th>
-                <th>Комментарии о клиенте</th>
                 <th>Количество посещений</th>
+                <th>Комментарии о клиенте</th>
             </tr>
             </thead>
             <tbody>
             @foreach($clients as $client)
                 <tr id="{{ $client->id }}">
                     <td>
-{{--                        <input name="name" type="text" class="form form-control attribute" value="{{ $client->name }}">--}}
-                    {{ $client->name }}
+                        <input name="name" type="text" class="form form-control attribute" value="{{ $client->name }}">
+                        {{--                    {{ $client->name }}--}}
                     </td>
                     <td>
-{{--                        <input name="number" type="text" class="form form-control attribute" value="{{ $client->number }}">--}}
-                    {{ $client->number }}
+                        <input name="number" type="text" class="form form-control attribute"
+                               value="{{ $client->number }}">
+                        {{--                    {{ $client->number }}--}}
                     </td>
                     <td>
-{{--                        <input name="mail" type="text" class="form form-control attribute" value="{{ $client->mail }}">--}}
-                        {{ $client->mail }}
+                        <input name="mail" type="text" class="form form-control attribute" value="{{ $client->mail }}">
+                        {{--                        {{ $client->mail }}--}}
                     </td>
                     <td>
                         <div>серия:
-{{--                            <input type="text" name="serial" value="{{ $client->serial }}"--}}
-{{--                                   class="form form-control col-6">--}}
-                            {{ $client->serial }}
+                            <input type="text" name="serial" value="{{ $client->serial }}" class="form form-control">
+                            {{--                            {{ $client->serial }}--}}
                         </div>
                         <div>номер:
-{{--                            <input type="text" name="passport_number" value="{{ $client->passport_number }}"--}}
-{{--                                   class="form form-control col-6">--}}
-                            {{ $client->passport_number }}
+                            <input type="text" name="passport_number" value="{{ $client->passport_number }}" class="form form-control">
+                            {{--                            {{ $client->passport_number }}--}}
                         </div>
                         <div>дата регистрации:
-{{--                            <input type="date" name="passport_data" value="{{ $client->passport_data }}"--}}
-{{--                                   class="form form-control col-6">--}}
-                            {{ $client->passport_data }}
+                            <input type="date" name="passport_data" value="{{ $client->passport_data }}" class="form form-control">
+                            {{--                            {{ $client->passport_data }}--}}
                         </div>
                     </td>
+                    <td>{{ $client->number_of_sessions }}</td>
                     <td>
                         <textarea class="form form-control attribute" name="comments_about_client"
                                   id="comments_about_client"
                                   cols="30" rows="5">{{ $client->comments_about_client }}</textarea>
                     </td>
-                    <td>{{ $client->number_of_sessions }}</td>
                 </tr>
             @endforeach
             </tbody>

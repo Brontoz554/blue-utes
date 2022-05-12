@@ -126,8 +126,7 @@
                                     <a class="btn btn-default mb-3" href="{{ route('edit.booking.view', $booking->id) }}">Редактировать</a>
 
                                     <a class="btn btn-default mb-3"
-                                       href="{{ route('edit.nutrition.view', $booking->id) }}">Изменить
-                                        рацион</a>
+                                       href="{{ route('edit.nutrition.view', $booking->id) }}">Посмотреть рацион</a>
 
                                     <a class="btn btn-default mb-3" href="{{ route('destroy.booking', $booking->id) }}">Удалить</a>
                                 </div>

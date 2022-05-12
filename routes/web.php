@@ -88,7 +88,8 @@ Route::get('/check-room-booking', 'BookingController@checkRoom')->name('check.ro
 Route::get('/destroy-booking/{booking}', 'BookingController@destroyBooking')->name('destroy.booking');
 Route::get('/edit-booking/{booking}', 'BookingController@editBookingView')->name('edit.booking.view');
 Route::post('/edit-booking/', 'BookingController@editBooking')->name('edit.booking');
-Route::get('/edit-nutrition-booking/{booking}', 'BookingController@editNutritionBooking')->name('edit.nutrition.view');
+Route::get('/edit-nutrition-booking/{booking}', 'BookingController@editNutritionView')->name('edit.nutrition.view');
+Route::post('/edit-nutrition', 'BookingController@editNutrition')->name('edit.nutrition');
 
 Route::post('/getTariffInfo', 'TariffController@getTariffInfo')->name('getTariffInfo');
 Route::post('/getTariffRoomInfo', 'TariffController@getTariffRoomInfo')->name('getTariffRoomInfo');

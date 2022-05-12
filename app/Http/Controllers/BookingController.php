@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BookingNutrition;
 use App\BookingRooms;
 use App\Client;
+use App\Eating;
 use App\Rooms;
 use App\RoomTypes;
 use App\Tariff;
@@ -41,7 +42,7 @@ class BookingController extends Controller
     /**
      * @return JsonResponse
      */
-    public function getBookings()
+    public function getBookings(): JsonResponse
     {
         $roomTypes = RoomTypes::get();
 
@@ -95,10 +96,12 @@ class BookingController extends Controller
                 if ($request->client_type == 'newClient') {
                     $client = Client::saveClient($request);
                 } else {
-                    $client = Client::where('number', '=', $request->oldClient)->first();
+                    $client = Client::where('id', '=', $request->oldClient)->first();
                     $client->increment('number_of_sessions');
                 }
+
                 $id = BookingRooms::bookingRoom($request, $client->id);
+
                 BookingNutrition::createNutritionInfo($request, $id);
             });
         }
@@ -219,13 +222,28 @@ class BookingController extends Controller
      * @param BookingRooms $booking
      * @return View
      */
-    public function editNutritionBooking(BookingRooms $booking): View
+    public function editNutritionView(BookingRooms $booking): View
     {
         $from = Carbon::parse($booking->date_start . ' ' . $booking->time_start);
         $to = Carbon::parse($booking->date_end . ' ' . $booking->time_end);
         $days = $to->diffInDays($from) + 1;
 
         return view('management-system.booking.edit-nutrition', ['booking' => $booking, 'days' => $days]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function editNutrition(Request $request): JsonResponse
+    {
+        if (strlen($request->option) > 0) {
+            BookingNutrition::where('id', $request->id)->update([
+                $request->name => $request->option,
+            ]);
+            return response()->json([]);
+        }
+        return response()->json([], 400);
     }
 
     /**

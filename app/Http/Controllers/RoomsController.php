@@ -57,8 +57,8 @@ class RoomsController extends Controller
             $room = new Rooms([
                 'room_types_id' => $request->input('room_types_id'),
                 'number' => $request->input('number'),
-                'price' => $request->input('price'),
-                'space' => $request->input('space')
+                'space' => $request->input('space'),
+                'another' => $request->input('another'),
             ]);
             $room->save();
 
@@ -116,10 +116,9 @@ class RoomsController extends Controller
         Rooms::where('id', '=', $request->input('dataId'))->update([
             'room_types_id' => $request->input('room_types_id'),
             'number' => $request->input('number'),
-            'price' => $request->input('price'),
             'space' => $request->input('space'),
             'description' => $request->input('description'),
-            'another' => isset($request->another) ? 'on' : 'off',
+            'another' => $request->input('another'),
         ]);
 
         if ($request->input('another') == 'on') {
@@ -132,6 +131,10 @@ class RoomsController extends Controller
         return Redirect::route('room.view');
     }
 
+    /**
+     * @param Rooms $room
+     * @return void
+     */
     public function repairRoom(Rooms $room)
     {
 
@@ -152,13 +155,11 @@ class RoomsController extends Controller
         $messages = [
             'number.required' => 'Вы забыли заполнить номер номера',
             'number.unique' => 'Такой номер уже есть',
-            'price.required' => 'Вы забыли заполнить цену за сутки проживания',
             'space.required' => 'Вы забыли заполнить количество спальных мест',
         ];
 
         $request->validate([
             'number' => "required|$uniqueRule",
-            'price' => 'required',
             'space' => 'required',
         ], $messages);
     }

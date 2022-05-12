@@ -29,16 +29,6 @@ class ClientController extends Controller
         return response()->json([], 400);
     }
 
-//    /**
-//     * @return View
-//     */
-//    public function createRoomView(): View
-//    {
-//        $types = RoomTypes::get();
-//
-//        return view('rooms.create', ['types' => $types]);
-//    }
-
     /**
      * @return View
      */
@@ -48,30 +38,5 @@ class ClientController extends Controller
 
         return view('management-system.clients.index', ['clients' => $clients]);
     }
-
-//    /**
-//     * @param Request $request
-//     * @return View
-//     */
-//    public function storeRoom(Request $request): View
-//    {
-//        $messages = [
-//            'number.required' => 'Вы забыли заполнить номер номера',
-//            'number.unique' => 'Такой номер уже есть',
-//            'price.required' => 'Вы забыли заполнить цену за сутки проживания',
-//            'space.required' => 'Вы забыли заполнить количество спальных мест',
-//        ];
-//
-//        $request->validate([
-//            'number' => 'required|unique:rooms',
-//            'price' => 'required',
-//            'space' => 'required',
-//        ], $messages);
-//
-//        $room = new Rooms($request->all());
-//        $room->save();
-//
-//        return $this->createRoomView();
-//    }
 
 }
