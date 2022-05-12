@@ -24,8 +24,8 @@
                             <td style="min-width: 150px" data-target="{{ $nutrition->id }}">
                                 <div>
                                     порции завтрака: <input class="form form-control col-3" type="number"
-                                                           data-target="{{ $nutrition->id }}"
-                                                           name="breakfast" value="{{ $nutrition->breakfast }}">
+                                                            data-target="{{ $nutrition->id }}"
+                                                            name="breakfast" value="{{ $nutrition->breakfast }}">
                                 </div>
                                 <div>
                                     порции обеда: <input class="form form-control col-3" type="number" name="dinner"
@@ -44,6 +44,22 @@
                 </table>
             </div>
         </div>
+
+        <form class="card p-3">
+            <h4>Выставить счёт за дополнительную порцию</h4>
+
+            <div class="form-group required mt-2">
+                <label for="name">Название</label>
+                <input type="text" name="name" id="name" class="form form-control col-3">
+            </div>
+
+            <div class="form-group required">
+                <label for="price">Цена</label>
+                <input type="number" name="price" id="price" class="form form-control col-3">
+            </div>
+
+            <input type="submit" class="btn btn-secondary col-3" value="Добавить счёт">
+        </form>
     </div>
     <script>
         $(".form.form-control.col-3").change(function () {

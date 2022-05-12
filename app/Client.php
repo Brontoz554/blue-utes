@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Client extends Model
 {
@@ -14,8 +15,18 @@ class Client extends Model
      */
     public static function saveClient($request): Client
     {
-        $client = new self([
+        $initials = '';
+        $initialsArray = explode(' ', $request->name);
+        foreach ($initialsArray as $key => $item) {
+            $initials .= Str::upper(mb_substr($item, 0, 1));
+            if (!(array_key_last($initialsArray) == $key)) {
+                $initials .= '.';
+            }
+        }
+
+        $client = new Client([
             'name' => $request->name,
+            'initials' => $initials,
             'number' => $request->number,
             'mail' => $request->mail,
             'serial' => $request->serial,

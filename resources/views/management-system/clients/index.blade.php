@@ -20,6 +20,7 @@
                 <tr id="{{ $client->id }}">
                     <td>
                         <input name="name" type="text" class="form form-control attribute" value="{{ $client->name }}">
+                        <input name="initials" type="text" class="form form-control attribute" value="{{ $client->initials }}">
                         {{--                    {{ $client->name }}--}}
                     </td>
                     <td>
