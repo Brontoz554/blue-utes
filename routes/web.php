@@ -130,6 +130,7 @@ Route::get('/bla', function () {
             foreach ($room->bookings as $booking) {
                 $start = Carbon::parse('2022-05-00');
                 $end = Carbon::parse('2022-06-00');
+
                 $first = Carbon::create($booking->date_start . ' ' . $booking->time_start);
                 $second = Carbon::create($booking->date_end . ' ' . $booking->time_end);
 

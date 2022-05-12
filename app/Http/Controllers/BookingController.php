@@ -70,8 +70,7 @@ class BookingController extends Controller
         }
 
         return response()->json([
-            'data' => $json,
-            'request' => $request->all()
+            'data' => $json
         ]);
     }
 
