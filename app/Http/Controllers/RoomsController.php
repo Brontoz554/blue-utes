@@ -163,4 +163,24 @@ class RoomsController extends Controller
             'space' => 'required',
         ], $messages);
     }
+
+    /**
+     * @param Rooms $room
+     * @return JsonResponse
+     */
+    public function getAllRoomBookings(Rooms $room): JsonResponse
+    {
+        $response = [];
+
+        foreach ($room->bookings as $booking) {
+            $response[$booking->id]['room'] = collect($booking->room)->toArray();
+            $response[$booking->id]['tariff'] = collect($booking->tariff)->toArray();
+            $response[$booking->id]['client'] = collect($booking->client)->toArray();
+            $response[$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
+        }
+
+        return response()->json([
+            'data' => $response,
+        ], 200);
+    }
 }

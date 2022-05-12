@@ -112,6 +112,7 @@ Route::post('/changeCheckInTime', 'BookingController@changeCheckInTime')->name('
 
 Route::get('/test-booking', 'BookingController@indexView')->name('indexView');
 Route::post('/getBookings', 'BookingController@getBookings')->name('getBookings');
+Route::get('/getAllRoomBookings/{room}', 'RoomsController@getAllRoomBookings')->name('getAllRoomBookings');
 
 Route::get('/bla', function () {
     $tariff = Tariff::where('id', '=', 20)->first();
