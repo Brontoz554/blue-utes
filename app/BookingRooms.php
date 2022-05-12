@@ -136,4 +136,12 @@ class BookingRooms extends Model
     {
         return $this->hasMany(BookingNutrition::class, 'booking_id');
     }
+
+    /**
+     * @return HasMany
+     */
+    public function PaidServiceNutritiousBooking(): HasMany
+    {
+        return $this->hasMany(PaidServiceNutritiousBooking::class, 'booking_id');
+    }
 }

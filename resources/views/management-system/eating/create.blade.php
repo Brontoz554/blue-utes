@@ -67,18 +67,6 @@
                     option: $(this).val(),
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function () {
-                    $('.toast-top-right.success-message').show(300)
-                    setTimeout(() => {
-                        $('.toast-top-right.success-message').hide(300)
-                    }, 4000)
-                },
-                error: function () {
-                    $('.toast-top-right.error-message').show()
-                    setTimeout(() => {
-                        $('.toast-top-right.error-message').hide(300)
-                    }, 4000)
-                }
             });
         });
     </script>

@@ -53,8 +53,13 @@ class BookingController extends Controller
             foreach ($roomType->rooms as $room) {
                 $json[$roomType->name][$room->number] = collect($room)->toArray();
                 foreach ($room->bookings as $booking) {
-                    $period = CarbonPeriod::create($booking->date_start, $booking->date_end);
-                    if ($period->contains($request->date_start) && $period->contains($request->date_end)) {
+                    $start = Carbon::parse($request->date_start);
+                    $end = Carbon::parse($request->date_end);
+
+                    $first = Carbon::create($booking->date_start . ' ' . $booking->time_start);
+                    $second = Carbon::create($booking->date_end . ' ' . $booking->time_end);
+
+                    if ($first->between($start, $end) && $second->between($start, $end)) {
                         $json[$roomType->name][$room->number]['items'][$booking->id]['booking'] = collect($booking)->toArray();
                         $json[$roomType->name][$room->number]['items'][$booking->id]['client'] = collect($booking->client)->toArray();
                         $json[$roomType->name][$room->number]['items'][$booking->id]['tariff'] = collect($booking->tariff)->toArray();

@@ -9,4 +9,6 @@ class PaidServiceNutritiousBooking extends Model
     protected $table = 'paid_service_nutritious_booking';
 
     protected $guarded = [];
+
+    public $timestamps = false;
 }

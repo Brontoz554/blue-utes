@@ -12,8 +12,10 @@
 */
 
 use App\BookingRooms;
+use App\RoomTypes;
 use App\Tariff;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 Auth::routes();
 
@@ -103,6 +105,10 @@ Route::post('/room-service', 'RoomServiceController@storeRoomService')->name('cr
 Route::get('/destroy-room-service/{id}', 'RoomServiceController@destroyRoomService')->name('destroy.room.service');
 Route::post('/edit-room-service', 'RoomServiceController@editRoomService')->name('edit.room.service');
 
+Route::post('/create-paid-nutrition-service', 'PaidServiceNutritiousBookingController@store')->name('create.paid.nutrition.service');
+Route::post('/editPaidNutritious', 'PaidServiceNutritiousBookingController@editPaidNutritious')->name('editPaidNutritious');
+Route::get('/destroyPaidNutritious/{service}', 'PaidServiceNutritiousBookingController@destroy')->name('destroy.paid.nutritious');
+
 Route::get('/reception', 'ReceptionController@index')->name('reception');
 
 Route::get('/kitchen', 'KitchenController@index')->name('kitchen');
@@ -115,10 +121,30 @@ Route::post('/getBookings', 'BookingController@getBookings')->name('getBookings'
 Route::get('/getAllRoomBookings/{room}', 'RoomsController@getAllRoomBookings')->name('getAllRoomBookings');
 
 Route::get('/bla', function () {
-    $tariff = Tariff::where('id', '=', 20)->first();
-    $tariff['treatment'] = $tariff->treatments;
-    $tariff['services'] = $tariff->services;
-    $tariff['eatings'] = $tariff->eatings;
-    dd($tariff);
+    $roomTypes = RoomTypes::get();
+
+    $json = [];
+    foreach ($roomTypes as $roomType) {
+        foreach ($roomType->rooms as $room) {
+            $json[$roomType->name][$room->number] = collect($room)->toArray();
+            foreach ($room->bookings as $booking) {
+                $start = Carbon::parse('2022-05-00');
+                $end = Carbon::parse('2022-05-16');
+                $first = Carbon::create($booking->date_start . ' ' . $booking->time_start);
+                $second = Carbon::create($booking->date_end . ' ' . $booking->time_end);
+
+                if ($first->between($start, $end) && $second->between($start, $end)) {
+                    $json[$roomType->name][$room->number]['items'][$booking->id]['booking'] = collect($booking)->toArray();
+                    $json[$roomType->name][$room->number]['items'][$booking->id]['client'] = collect($booking->client)->toArray();
+                    $json[$roomType->name][$room->number]['items'][$booking->id]['tariff'] = collect($booking->tariff)->toArray();
+                    $json[$roomType->name][$room->number]['items'][$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
+                }
+            }
+        }
+    }
+
+    return response()->json([
+        'data' => $json
+    ]);
 //    dd(ceil(($hoursBefore / ($hoursAfter / 100)) * $booking->price));
 });
