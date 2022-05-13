@@ -11,10 +11,10 @@ use Illuminate\View\View;
 
 class ServicesController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['admin']);
-    }
+//    public function __construct()
+//    {
+//        $this->middleware(['admin']);
+//    }
 
     /**
      * @return View

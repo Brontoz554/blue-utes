@@ -14,13 +14,13 @@ use Illuminate\View\View;
 
 class NewsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware([
-            'auth',
-            'manager'
-        ]);
-    }
+//    public function __construct()
+//    {
+//        $this->middleware([
+//            'auth',
+//            'manager'
+//        ]);
+//    }
 
     /**
      * @return View

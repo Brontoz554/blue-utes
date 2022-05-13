@@ -9,10 +9,10 @@ use Illuminate\View\View;
 
 class ClientController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['admin']);
-    }
+//    public function __construct()
+//    {
+//        $this->middleware(['admin']);
+//    }
 
     /**
      * @param Request $request

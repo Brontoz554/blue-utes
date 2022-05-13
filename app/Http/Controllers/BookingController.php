@@ -21,10 +21,10 @@ use Illuminate\View\View;
 
 class BookingController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['manager']);
-    }
+//    public function __construct()
+//    {
+//        $this->middleware(['manager']);
+//    }
 
     /**
      * @return View
