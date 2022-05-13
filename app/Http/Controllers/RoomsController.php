@@ -174,6 +174,7 @@ class RoomsController extends Controller
 
         foreach ($room->bookings as $booking) {
             $response[$booking->id]['room'] = collect($booking->room)->toArray();
+            $response[$booking->id]['booking'] = collect($booking)->toArray();
             $response[$booking->id]['tariff'] = collect($booking->tariff)->toArray();
             $response[$booking->id]['client'] = collect($booking->client)->toArray();
             $response[$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
