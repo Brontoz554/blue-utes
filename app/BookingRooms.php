@@ -134,7 +134,7 @@ class BookingRooms extends Model
      */
     public function nutritious(): HasMany
     {
-        return $this->hasMany(BookingNutrition::class, 'booking_id');
+        return $this->hasMany(BookingNutrition::class, 'booking_id')->orderBy('date', 'ASC');
     }
 
     /**

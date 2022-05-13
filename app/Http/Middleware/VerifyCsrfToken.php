@@ -17,6 +17,7 @@ class VerifyCsrfToken extends Middleware
         '/getTariffRoomInfo',
         '/getRoomPrice',
         '/checkRoomBooking',
-        '/getBookings'
+        '/getBookings',
+        '/getAllRoomBookings'
     ];
 }

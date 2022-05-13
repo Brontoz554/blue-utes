@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\BookingNutrition;
 use App\BookingRooms;
 use App\Client;
-use App\Eating;
 use App\Rooms;
 use App\RoomTypes;
 use App\Tariff;
@@ -22,6 +21,11 @@ use Illuminate\View\View;
 
 class BookingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['manager']);
+    }
+
     /**
      * @return View
      */
@@ -229,6 +233,50 @@ class BookingController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function editBooking(Request $request): RedirectResponse
+    {
+        $contains = BookingRooms::isContainsPeriod(
+            $request->room,
+            $request->date_start . ' ' . $request->time_start,
+            $request->date_end . ' ' . $request->time_end,
+            $request->bookingId
+        );
+
+        if ($contains) {
+            Session::flash('room', 'Номер занят');
+
+            return Redirect::back()->withInput();
+        }
+
+        DB::transaction(function () use ($request) {
+            BookingRooms::where('id', '=', $request->bookingId)->update([
+                'date_start' => $request->date_start,
+                'time_start' => $request->time_start,
+                'date_end' => $request->date_end,
+                'time_end' => $request->time_end,
+                'old' => $request->old,
+                'new' => $request->new,
+                'price' => $request->price,
+                'discount' => $request->discount,
+                'booking_type' => $request->booking_type,
+                'payment_type' => $request->payment_type,
+                'payment_state' => $request->payment_state,
+                'type_of_day' => $request->type_of_day,
+                'room_id' => $request->room,
+                'tariff_id' => $request->tariff,
+            ]);
+
+            BookingNutrition::recalculateNutritionInfo($request, $request->bookingId);
+        });
+
+        Session::flash('success', 'Информация о бронировании изменена');
+        return Redirect::route('booking');
+    }
+
+    /**
      * @param BookingRooms $booking
      * @return View
      */
@@ -254,46 +302,6 @@ class BookingController extends Controller
             return response()->json([]);
         }
         return response()->json([], 400);
-    }
-
-    /**
-     * @param Request $request
-     * @return RedirectResponse
-     */
-    public function editBooking(Request $request): RedirectResponse
-    {
-        $contains = BookingRooms::isContainsPeriod(
-            $request->room,
-            $request->date_start . ' ' . $request->time_start,
-            $request->date_end . ' ' . $request->time_end,
-            $request->bookingId
-        );
-
-        if ($contains) {
-            Session::flash('room', 'Номер занят');
-
-            return Redirect::back()->withInput();
-        }
-
-        BookingRooms::where('id', '=', $request->bookingId)->update([
-            'date_start' => $request->date_start,
-            'time_start' => $request->time_start,
-            'date_end' => $request->date_end,
-            'time_end' => $request->time_end,
-            'old' => $request->old,
-            'new' => $request->new,
-            'price' => $request->price,
-            'discount' => $request->discount,
-            'booking_type' => $request->booking_type,
-            'payment_type' => $request->payment_type,
-            'payment_state' => $request->payment_state,
-            'type_of_day' => $request->type_of_day,
-            'room_id' => $request->room,
-            'tariff_id' => $request->tariff,
-        ]);
-
-        Session::flash('success', 'Информация о бронировании изменена');
-        return Redirect::route('booking');
     }
 
     /**
