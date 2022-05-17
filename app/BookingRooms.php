@@ -3,11 +3,13 @@
 namespace App;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 
 class BookingRooms extends Model
@@ -48,30 +50,65 @@ class BookingRooms extends Model
      * @param $roomId
      * @param $start
      * @param $end
+     * @param $count
      * @param $bookingId
      * @return bool
      */
-    public static function isContainsPeriod($roomId, $start, $end, $bookingId = false): bool
+    public static function isContainsPeriod($roomId, $start, $end, $count, $bookingId = false): bool
     {
+        $room = Rooms::find($roomId);
+        $periods = [];
+
         if ($bookingId) {
-            $room = BookingRooms::where('room_id', '=', $roomId)->where('id', '!=', $bookingId)->get();
+            $bookings = BookingRooms::where('room_id', '=', $roomId)->where('id', '!=', $bookingId)->get();
         } else {
-            $room = BookingRooms::where('room_id', '=', $roomId)->get();
+            $bookings = BookingRooms::where('room_id', '=', $roomId)->get();
         }
 
-        if (count($room) > 0) {
-            foreach ($room as $booking) {
+        if (count($bookings) > 0) {
+            foreach ($bookings as $booking) {
                 $period = CarbonPeriod::create(
                     $booking->date_start . ' ' . $booking->time_start,
                     $booking->date_end . ' ' . $booking->time_end
                 );
 
                 if ($period->contains($start) || $period->contains($end)) {
-                    return true;
-                } else {
-                    return false;
+                    if ($room->multiple) {
+                        $periods[] = $booking;
+                    } else {
+                        return true;
+                    }
                 }
             }
+        }
+
+        // нужно пройтись по всем периодам, посмотреть какие наслаиваются друг на друга
+        // и считать кол-во человек в номере для каждого отдельного дня
+        if (count($periods) > 0) {
+            $days = [];
+            //Проходимся по всем периодам, когда номер занят, собираем кол-во жильцов в комнате.
+            foreach ($periods as $booking) {
+                $period = CarbonPeriod::create(
+                    $booking->date_start . ' ' . $booking->time_start,
+                    $booking->date_end . ' ' . $booking->time_end
+                );
+                $dates = $period->toArray();
+
+                foreach ($dates as $date) {
+                    $days[$date->format('d-m-y')] =
+                        isset($days[$date->format('d-m-y')])
+                            ? $days[$date->format('d-m-y')] + $booking->old + $booking->new
+                            : $booking->old + $booking->new;
+                }
+            }
+
+            foreach ($days as $day) {
+                // если комната переполнена, то отказ от бронирования
+                if ($room->space - ($day + $count) < 0) {
+                    return true;
+                }
+            }
+
         }
 
         return false;

@@ -247,7 +247,7 @@
         </div>
     </fieldset>
 
-    <div class="tariff-information" style="display: none">
+    <div class="tariff-information">
         <div class="mt-2 mb-2">
             <b>Название тарифа:</b> <span class="tariff-name">Тариф не выбран</span>
         </div>
@@ -376,6 +376,14 @@
             checkBooking();
         });
 
+        $('#old').on('change', async function () {
+            checkBooking();
+        });
+
+        $('#new').on('change', async function () {
+            checkBooking();
+        });
+
         $('#date_end').on('change', async function () {
             calculateTotalPrice();
             checkBooking();
@@ -388,7 +396,6 @@
 
         $('#type_of_day').on('change', async function () {
             calculateTotalPrice();
-            checkBooking();
         });
 
         $('#discount').change(function () {
@@ -412,7 +419,6 @@
                     $('.breakfast').hide()
                     $('.dinner').hide()
                     $('.lunch').hide()
-                    $('.tariff-information').show()
 
                     if (response.tariff.treatment === 'on') {
                         $.each(response.tariff.treatments, function (key, value) {
@@ -462,13 +468,9 @@
                 },
 
                 success: function (response) {
-                    sessionStorage.setItem('roomPrice', response.room[0].price);
-                    $('#old').attr("max", response.room[0].space)
-                    if ((response.room[0].space - 2) > 0) {
-                        $('#new').attr("max", response.room[0].space - 2)
-                    } else {
-                        $('#new').attr("max", response.room[0].space)
-                    }
+                    sessionStorage.setItem('roomPrice', response.room.price);
+                    $('#old').attr("max", response.room.space)
+                    $('#new').attr("max", response.room.space)
                 },
             });
         }
@@ -482,6 +484,8 @@
                     room: $('#room').val(),
                     start: $('#date_start').val() + ' ' + $('#time_start').val(),
                     end: $('#date_end').val() + ' ' + $('#time_end').val(),
+                    old: $('#old').val(),
+                    new: $('#new').val(),
                 },
 
                 success: function (response) {

@@ -24,14 +24,6 @@
     </div>
 
     <div class='form-group required'>
-        <label for="subject">Цена за сутки в ₽</label>
-        {{ Form::text('price', $room->price, ['class' => 'form form-control col-12']) }}
-        @error('price')
-        <div class="text-danger">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <div class='form-group required'>
         <label for="subject">Количество спальных мест</label>
         {{ Form::number('space', $room->space, ['class' => 'form form-control col-12']) }}
         @error('space')
@@ -65,7 +57,20 @@
         </div>
     </div>
 
-    <div class='form-group required'>
+    <div class="form-group multiple required pt-2" style="margin-bottom: 0 !important;">
+        <label for="multiple">Множественное заселение</label>
+        <select name="multiple" id="multiple" class="form form-select">
+            @if($room->multiple)
+                <option value="true">Да</option>
+                <option value="false">Нет</option>
+            @else
+                <option value="false">Нет</option>
+                <option value="true">Да</option>
+            @endif
+        </select>
+    </div>
+
+    <div class="form-group required mt-3">
         <label for="subject">Описание номера</label><span class="text-muted">(не обязятально)</span>
         {{ Form::textarea('description', $room->description, ['class' => 'form form-control col-12']) }}
     </div>

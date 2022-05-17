@@ -116,7 +116,7 @@
             $booking->type_of_day => $booking->type_of_day,
             'Санаторный' => 'Санаторный',
             'Отельный' => 'Отельный',
-        ]), null, ['class' => 'custom-select rounded-0']) !!}
+        ]), null, ['class' => 'form-select']) !!}
     </div>
 
     <div class="d-flex w-50">
@@ -143,7 +143,7 @@
             'Гость бронирует для себя' => 'Гость бронирует для себя',
             'Контактное лицо бронирует для гостя' => 'Контактное лицо бронирует для гостя',
             'Бронирует контрагент' => 'Бронирует контрагент',
-        ]), null, ['class' => 'custom-select rounded-0']) !!}
+        ]), null, ['class' => 'form-select']) !!}
     </div>
 
     <div class="d-flex w-75">
@@ -154,7 +154,7 @@
                 'Наличными(при заселении)' => 'Наличными(при заселении)',
                 'Картой (при заселении)' => 'Картой (при заселении)',
                 'Перевод' => 'Перевод',
-            ]), null, ['class' => 'custom-select rounded-0']) !!}
+            ]), null, ['class' => 'form-select']) !!}
             @error("payment_type")
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -165,82 +165,12 @@
                 $booking->payment_state => $booking->payment_state,
                 'Оплачено' => 'Оплачено',
                 'Не оплачено' => 'Не оплачено',
-            ]), null, ['class' => 'custom-select rounded-0']) !!}
+            ]), null, ['class' => 'form-select']) !!}
             @error("discount")
             <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
     </div>
-
-    {{--    <fieldset class="bg-light p-4 mt-2 mb-2">--}}
-    {{--        <legend>Данные клиента</legend>--}}
-    {{--        <select name="client_type" id="client_type" class="form form-select mb-2">--}}
-    {{--            <option value="newClient">Новый клиент</option>--}}
-    {{--            <option value="oldClient">Клиент уже посещял санаторий</option>--}}
-    {{--        </select>--}}
-    {{--        <div id="newClient">--}}
-    {{--            <div class="d-flex">--}}
-    {{--                <div class="col-4 pl-0">--}}
-    {{--                    <label for="subject">Имя гостя</label>--}}
-    {{--                    {{ Form::text("name", $booking->client->name, ["class" => "form form-control"]) }}--}}
-    {{--                    @error("name")--}}
-    {{--                    <div class="text-danger">{{ $message }}</div>--}}
-    {{--                    @enderror--}}
-    {{--                </div>--}}
-
-    {{--                <div class="col-4">--}}
-    {{--                    <label for="number">Номер телефона</label>--}}
-    {{--                    {{ Form::text("number", $booking->client->number, ["class" => "form form-control", 'id' => 'number']) }}--}}
-    {{--                    @error("number")--}}
-    {{--                    <div class="text-danger">{{ $message }}</div>--}}
-    {{--                    @enderror--}}
-    {{--                </div>--}}
-
-    {{--                <div class="col-4 pr-0">--}}
-    {{--                    <label for="mail">Почта</label>--}}
-    {{--                    {{ Form::email("mail", $booking->client->mail, ["class" => "form form-control", 'id' => 'mail']) }}--}}
-    {{--                    @error("mail")--}}
-    {{--                    <div class="text-danger">{{ $message }}</div>--}}
-    {{--                    @enderror--}}
-    {{--                </div>--}}
-    {{--            </div>--}}
-    {{--            <div class="d-flex">--}}
-    {{--                <div class="col-4 pl-0">--}}
-    {{--                    <label for="subject">Серия паспорта</label>--}}
-    {{--                    {{ Form::text("serial", $booking->client->serial, ["class" => "form form-control", 'id' => 'serial']) }}--}}
-    {{--                    @error("serial")--}}
-    {{--                    <div class="text-danger">{{ $message }}</div>--}}
-    {{--                    @enderror--}}
-    {{--                </div>--}}
-
-    {{--                <div class="col-4">--}}
-    {{--                    <label for="subject">Номер паспорта</label>--}}
-    {{--                    {{ Form::text("passport_number", $booking->client->passport_number, ["class" => "form form-control", 'id' => 'passport_number']) }}--}}
-    {{--                    @error("passport_number")--}}
-    {{--                    <div class="text-danger">{{ $message }}</div>--}}
-    {{--                    @enderror--}}
-    {{--                </div>--}}
-
-    {{--                <div class="col-4 pr-0">--}}
-    {{--                    <label for="subject">Дата выдачи</label>--}}
-    {{--                    {{ Form::date("passport_data", $booking->client->passport_data, ["class" => "form form-control", 'id' => 'passport_date']) }}--}}
-    {{--                    @error("passport_data")--}}
-    {{--                    <div class="text-danger">{{ $message }}</div>--}}
-    {{--                    @enderror--}}
-    {{--                </div>--}}
-    {{--            </div>--}}
-    {{--        </div>--}}
-    {{--        <div id="oldClient" style="display:none;">--}}
-    {{--            <select name="oldClient" class="form form-select">--}}
-    {{--                @foreach($clients as $client)--}}
-    {{--                    <option value="{{ $client->number }}">--}}
-    {{--                        {{ $client->name }}--}}
-    {{--                        {{ $client->number }}--}}
-    {{--                    </option>--}}
-    {{--                @endforeach--}}
-    {{--            </select>--}}
-    {{--        </div>--}}
-    {{--    </fieldset>--}}
 
     <div class="form-group required mt-2">
         <label>Комментарий</label>
@@ -435,6 +365,8 @@
                     room: $('#room').val(),
                     start: $('#date_start').val() + ' ' + $('#time_start').val(),
                     end: $('#date_end').val() + ' ' + $('#time_end').val(),
+                    old: $('#old').val(),
+                    new: $('#new').val(),
                 },
 
                 success: function (response) {

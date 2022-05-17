@@ -15,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -98,11 +99,13 @@ class BookingController extends Controller
     {
         BookingController::validateRequest($request);
 
-        if (BookingRooms::isContainsPeriod($request->room,
+        if (BookingRooms::isContainsPeriod(
+            $request->room,
             $request->date_start . ' ' . $request->time_start,
-            $request->date_end . ' ' . $request->time_end
+            $request->date_end . ' ' . $request->time_end,
+            $request->old + $request->new,
         )) {
-            Session::flash('room', 'Номер занят');
+            Session::flash('room', 'Номер занят или превышено максимальное количество людей');
 
             return Redirect::back()->withInput();
         } else {
@@ -111,7 +114,6 @@ class BookingController extends Controller
                     $client = Client::saveClient($request);
                 } else {
                     $client = Client::where('id', '=', $request->oldClient)->first();
-                    $client->increment('number_of_sessions');
                 }
 
                 $id = BookingRooms::bookingRoom($request, $client->id);
@@ -188,11 +190,12 @@ class BookingController extends Controller
         if (BookingRooms::isContainsPeriod(
             $request->room,
             $request->start,
-            $request->end
+            $request->end,
+            $request->old + $request->new,
         )) {
             return response()->json([
                 'error' => true,
-                'message' => 'Номер занят'
+                'message' => 'Номер занят или превышено максимальное количество людей'
             ]);
         }
 
@@ -242,11 +245,12 @@ class BookingController extends Controller
             $request->room,
             $request->date_start . ' ' . $request->time_start,
             $request->date_end . ' ' . $request->time_end,
+            $request->old + $request->new,
             $request->bookingId
         );
 
         if ($contains) {
-            Session::flash('room', 'Номер занят');
+            Session::flash('room', 'Номер занят или превышено максимальное количество людей в комнате');
 
             return Redirect::back()->withInput();
         }
@@ -272,8 +276,8 @@ class BookingController extends Controller
             BookingNutrition::recalculateNutritionInfo($request, $request->bookingId);
         });
 
-        Session::flash('success', 'Информация о бронировании изменена');
-        return Redirect::route('booking');
+        Session::flash('success', 'Информация о бронировании изменена, внесите корректировки в рацион питания');
+        return Redirect::route('edit.nutrition.view', $request->bookingId);
     }
 
     /**

@@ -3,6 +3,13 @@
 @section("content")
 
     <div class="container">
+        @if (session()->has('success'))
+            <div class="d-flex justify-content-end">
+                <div class="alert alert-success w-25">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
         <div class="card p-3">
             <h5 class="pt-2 pb-2">Рацион клиента {{ $booking->client->name }}</h5>
             <div>
@@ -23,19 +30,19 @@
                         @foreach($booking->nutritious as $nutrition)
                             <td style="min-width: 150px" data-target="{{ $nutrition->id }}">
                                 <div>
-                                    порции завтрака: <input class="form form-control col-3 nutritious-item"
+                                    порции завтрака: <input class="form form-control nutritious-item"
                                                             type="number"
                                                             data-target="{{ $nutrition->id }}"
                                                             name="breakfast" value="{{ $nutrition->breakfast }}">
                                 </div>
                                 <div>
-                                    порции обеда: <input class="form form-control col-3 nutritious-item" type="number"
+                                    порции обеда: <input class="form form-control nutritious-item" type="number"
                                                          name="dinner"
                                                          data-target="{{ $nutrition->id }}"
                                                          value="{{ $nutrition->dinner }}">
                                 </div>
                                 <div>
-                                    порции ужина: <input class="form form-control col-3 nutritious-item" type="number"
+                                    порции ужина: <input class="form form-control nutritious-item" type="number"
                                                          name="lunch"
                                                          data-target="{{ $nutrition->id }}"
                                                          value="{{ $nutrition->lunch }}">

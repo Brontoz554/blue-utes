@@ -13,6 +13,7 @@
                 <th>Номер</th>
                 <th>Количество спальных мест</th>
                 <th>Статус</th>
+                <th>Совместный номер</th>
                 <th>Доп. услуги</th>
                 <th>Доп. описание</th>
                 <th></th>
@@ -29,6 +30,13 @@
                         {{ $room->space }}
                     </td>
                     <td>{{ $room->state }}</td>
+                    <td>
+                        @if($room->multiple)
+                            Да
+                        @else
+                            Нет
+                        @endif
+                    </td>
                     <td>
                         @if($room->another == 'on')
                             @foreach($room->roomServices as $service)

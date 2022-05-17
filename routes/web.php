@@ -120,29 +120,18 @@ Route::get('/test-booking', 'BookingController@indexView')->name('indexView');
 Route::post('/getBookings', 'BookingController@getBookings')->name('getBookings');
 Route::get('/getAllRoomBookings/{room}', 'RoomsController@getAllRoomBookings')->name('getAllRoomBookings');
 
+
 Route::get('/bla', function () {
-    $roomTypes = RoomTypes::get();
+    $room = \App\Rooms::find(2);
+    if ($room->multiple) {
+        $bk = BookingRooms::where('room_id', '=', 2)
+            ->whereBetween('date_start', ['2022-05-10', '2022-05-25'])
+            ->whereBetween('date_end', ['2022-05-10', '2022-05-25'])
+            ->get();
 
-    $json = [];
-    foreach ($roomTypes as $roomType) {
-        foreach ($roomType->rooms as $room) {
-            $json[$roomType->name][$room->number] = collect($room)->toArray();
-            foreach ($room->bookings as $booking) {
-                $start = Carbon::parse('2022-05-00');
-                $end = Carbon::parse('2022-06-00');
-
-                $first = Carbon::create($booking->date_start . ' ' . $booking->time_start);
-                $second = Carbon::create($booking->date_end . ' ' . $booking->time_end);
-
-                if ($first->between($start, $end) && $second->between($start, $end)) {
-                    $json[$roomType->name][$room->number]['items'][$booking->id]['booking'] = collect($booking)->toArray();
-                    $json[$roomType->name][$room->number]['items'][$booking->id]['client'] = collect($booking->client)->toArray();
-                    $json[$roomType->name][$room->number]['items'][$booking->id]['tariff'] = collect($booking->tariff)->toArray();
-                    $json[$roomType->name][$room->number]['items'][$booking->id]['nutritious'] = collect($booking->nutritious)->toArray();
-                }
-            }
+        dd($bk);
+        foreach ($bk as $item) {
+            dd($room->space - ($item->old + $item->new));
         }
     }
-
-    dd($json);
 });

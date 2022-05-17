@@ -78,9 +78,9 @@ class BookingNutrition extends Model
      */
     public static function recalculateNutritionInfo($request, $bookingId)
     {
-
         $period = CarbonPeriod::create($request->date_start, $request->date_end);
         $dates = $period->toArray();
+        $will = [];
 
         foreach ($dates as $date) {
             $nutrition = BookingNutrition::where('booking_id', '=', $bookingId)
@@ -91,49 +91,28 @@ class BookingNutrition extends Model
                 $new = new BookingNutrition([
                     'booking_id' => $bookingId,
                     'date' => $date->format('d-m-y'),
-                    'breakfast' => $request->old + $request->new,
-                    'dinner' => $request->old + $request->new,
-                    'lunch' => $request->old + $request->new,
+                    'breakfast' => 0,
+                    'dinner' => 0,
+                    'lunch' => 0,
                 ]);
 
                 $new->save();
             }
         }
 
-//        $booking = BookingNutrition::where('booking_id', '=', $bookingId)->get();
-//
-//
-//        if ($request->date_start != $booking->date_start || $request->date_end != $booking->date_end) {
-//            $nutritious = BookingNutrition::where('booking_id', '=', $request->bookingId)->get();
-//            $data = [];
-//            foreach ($nutritious as $nutrition) {
-//                $data[$nutrition->date] = [
-//                    'booking_id' => $nutrition->booking_id,
-//                    'date' => $nutrition->date,
-//                    'breakfast' => $nutrition->breakfast,
-//                    'dinner' => $nutrition->dinner,
-//                    'lunch' => $nutrition->lunch,
-//                ];
-//            }
-//            $period = CarbonPeriod::create($request->date_start, $request->date_end);
-//            $dates = $period->toArray();
-//            foreach ($dates as $date) {
-//                if (!array_key_exists($date->format('d-m-y'), $data)) {
-//                    $new = new BookingNutrition([
-//                        'booking_id' => $nutrition->booking_id,
-//                        'date' => $date->format('d-m-y'),
-//                        'breakfast' => $request->old + $request->new,
-//                        'dinner' => $request->old + $request->new,
-//                        'lunch' => $request->old + $request->new,
-//                    ]);
-//
-//                    $new->save();
-//                }
-//            }
-//        }
-//
-//        if ($request->time_start != $booking->time_start || $request->time_end != $booking->time_end) {
-//
-//        }
+
+        $nutritious = BookingNutrition::where('booking_id', '=', $bookingId)->get();
+        foreach ($nutritious as $nutrition) {
+            foreach ($dates as $date) {
+                if ($nutrition->date == $date->format('d-m-y'))
+                    $will[] = $date->format('d-m-y');
+            }
+        }
+
+        $request = BookingNutrition::where('booking_id', '=', $bookingId);
+        foreach ($will as $item) {
+            $request->where('date', '!=', $item);
+        }
+        $request->delete();
     }
 }

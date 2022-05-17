@@ -59,6 +59,7 @@ class RoomsController extends Controller
                 'number' => $request->input('number'),
                 'space' => $request->input('space'),
                 'another' => $request->input('another'),
+                'multiple' => filter_var($request->input('multiple'), FILTER_VALIDATE_BOOLEAN),
             ]);
             $room->save();
 
@@ -91,7 +92,7 @@ class RoomsController extends Controller
     public function getRoomPrice(Request $request): JsonResponse
     {
         return response()->json(
-            ['room' => Rooms::where('id', '=', $request->id)->get()]
+            ['room' => Rooms::where('id', '=', $request->id)->first()]
         );
     }
 
@@ -119,6 +120,7 @@ class RoomsController extends Controller
             'space' => $request->input('space'),
             'description' => $request->input('description'),
             'another' => $request->input('another'),
+            'multiple' => filter_var($request->input('multiple'), FILTER_VALIDATE_BOOLEAN)
         ]);
 
         if ($request->input('another') == 'on') {

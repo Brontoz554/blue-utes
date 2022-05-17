@@ -50,7 +50,7 @@
                         <tr class="odd">
                             <td>{{ $room->number }} <span class="text-muted">{{ $roomType->name }}</span>
                             </td>
-                            <td>
+                            <td data-target="{{ $booking->date_start }}">
                                 <div>
                                     <b>Заезд: </b>
                                     {{ $booking->date_start }} : {{ $booking->time_start }}

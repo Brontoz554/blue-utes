@@ -50,7 +50,15 @@
         </div>
     </div>
 
-    <div class='form-group required'>
+    <div class="form-group multiple required pt-2" style="margin-bottom: 0 !important;">
+        <label for="multiple">Множественное заселение</label>
+        <select name="multiple" id="multiple" class="form form-select">
+            <option value="false">Нет</option>
+            <option value="true">Да</option>
+        </select>
+    </div>
+
+    <div class="form-group required pt-3">
         <label for="subject">Описание номера</label><span class="text-muted">(не обязятально)</span>
         {{ Form::textarea('description', null, ['class' => 'form form-control col-12']) }}
     </div>
